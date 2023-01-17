@@ -1,6 +1,8 @@
+using Core.Persistence.Repositories;
+
 namespace Domain.Entities
 {
-	public class Post
+	public class Post : Entity
 	{
 		public int Id { get; set; }
 		public string? Title { get; set; }

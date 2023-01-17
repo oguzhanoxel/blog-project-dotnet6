@@ -12,7 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
-builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+
+// Repositories
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IPostCategoryRepository, PostCategoryRepository>();
+
 builder.Services.AddDbContextPool<RepositoryDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("BlogProjectConnectionString"))
 );

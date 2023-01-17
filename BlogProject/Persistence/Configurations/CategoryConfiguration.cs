@@ -15,7 +15,7 @@ namespace Persistence.Configurations
 
 			builder.HasMany(category => category.PostCategories)
 			.WithOne()
-			.HasForeignKey(postCategory => postCategory.CategoryId)
+			.HasForeignKey(p => p.CategoryId)
 			.OnDelete(DeleteBehavior.NoAction);
 		}
 	}

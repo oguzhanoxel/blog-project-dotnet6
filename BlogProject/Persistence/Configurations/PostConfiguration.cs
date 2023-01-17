@@ -13,9 +13,9 @@ namespace Persistence.Configurations
 			builder.Property(post => post.Text).IsRequired();
 
 			builder.HasMany(post => post.PostCategories)
-				.WithOne()
-				.HasForeignKey(postCategory => postCategory.PostId)
-				.OnDelete(DeleteBehavior.NoAction);
+			.WithOne()
+			.HasForeignKey(p => p.PostId)
+			.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }

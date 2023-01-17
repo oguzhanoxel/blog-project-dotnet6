@@ -101,7 +101,7 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.Post", null)
                         .WithMany("PostCategories")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

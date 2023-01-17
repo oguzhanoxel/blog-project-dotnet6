@@ -1,12 +1,10 @@
+using Core.Persistence.Repositories;
 using Domain.Entities;
 
 namespace Domain.Repositories
 {
-	public interface ICategoryRepository
+	public interface ICategoryRepository : IAsyncRepository<Category>
 	{
-		Task<IEnumerable<Category>> GetAllAsync(CancellationToken cancellationToken = default);
-		Task<Category> GetByIdAsync(int id, CancellationToken cancellationToken = default);
-		void Insert(Category category);
-		void Remove(Category category);
+
 	}
 }

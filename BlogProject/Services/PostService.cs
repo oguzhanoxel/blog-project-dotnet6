@@ -9,23 +9,23 @@ namespace Services
 {
 	internal sealed class PostService : IPostService
 	{
-		private readonly IRepositoryManager _repositoryManager;
+		private readonly IPostRepository _postRepository;
 
-		public PostService(IRepositoryManager repositoryManager)
+		public PostService(IPostRepository postRepository)
 		{
-			_repositoryManager = repositoryManager;
+			_postRepository = postRepository;
 		}
 
 		public async Task<IEnumerable<PostListDto>> GetAllAsync(CancellationToken cancellationToken = default)
 		{
-			var posts = await _repositoryManager.PostRepository.GetAllAsync(cancellationToken);
+			var posts = await _postRepository.GetListAsync(cancellationToken:cancellationToken);
 			var postListDto = posts.Adapt<IEnumerable<PostListDto>>();
 			return postListDto;
 		}
 
 		public async Task<PostDto> GetByIdAsync(int id, CancellationToken cancellationToken = default)
 		{
-			var post = await _repositoryManager.PostRepository.GetByIdAsync(id, cancellationToken);
+			var post = await _postRepository.GetAsync(p => p.Id == id, cancellationToken);
 
 			if (post is null)
 			{
@@ -38,15 +38,14 @@ namespace Services
 
 		public async Task<PostDto> CreateAsync(PostCreateDto postCreateDto, CancellationToken cancellationToken = default)
 		{
-			var post = postCreateDto.Adapt<Post>();
-			_repositoryManager.PostRepository.Insert(post);
-			await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
+			var mappedPost = postCreateDto.Adapt<Post>();
+			var post = await _postRepository.CreateAsync(mappedPost);
 			return post.Adapt<PostDto>();
 		}
 
 		public async Task<PostDto> UpdateAsync(int id, PostUpdateDto postUpdateDto, CancellationToken cancellationToken = default)
 		{
-			var post = await _repositoryManager.PostRepository.GetByIdAsync(id, cancellationToken);
+			var post = await _postRepository.GetAsync(p => p.Id == id, cancellationToken);
 
 			if(post is null)
 			{
@@ -56,22 +55,22 @@ namespace Services
 			post.Title = postUpdateDto.Title;
 			post.Text = postUpdateDto.Text;
 
-			await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
+			await _postRepository.UpdateAsync(post);
+
 			return post.Adapt<PostDto>();
 		}
 
 		public async Task<PostDto> DeleteAsync(int id, CancellationToken cancellationToken = default)
 		{
-			var post = await _repositoryManager.PostRepository.GetByIdAsync(id, cancellationToken);
+			var post = await _postRepository.GetAsync(p => p.Id == id, cancellationToken);
 
 			if(post is null)
 			{
 				throw new PostNotFoundException(id);
 			}
 
-			_repositoryManager.PostRepository.Remove(post);
+			await _postRepository.DeleteAsync(post);
 
-			await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
 			return post.Adapt<PostDto>();
 		}
 	}

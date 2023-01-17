@@ -9,11 +9,11 @@ namespace Services
 		private readonly Lazy<ICategoryService> _lazyCategoryService;
 		private readonly Lazy<IPostCategoryService> _lazyPostCategoryService;
 
-		public ServiceManager(IRepositoryManager repositoryManager)
+		public ServiceManager(IPostRepository postRepository, ICategoryRepository categoryRepository, IPostCategoryRepository postCategoryRepository)
 		{
-			_lazyPostService = new Lazy<IPostService>(() => new PostService(repositoryManager));
-			_lazyCategoryService = new Lazy<ICategoryService>(() => new CategoryService(repositoryManager));
-			_lazyPostCategoryService = new Lazy<IPostCategoryService>(() => new PostCategoryService(repositoryManager));
+			_lazyPostService = new Lazy<IPostService>(() => new PostService(postRepository));
+			_lazyCategoryService = new Lazy<ICategoryService>(() => new CategoryService(categoryRepository));
+			_lazyPostCategoryService = new Lazy<IPostCategoryService>(() => new PostCategoryService(postCategoryRepository));
 		}
 		
 		public IPostService PostService => _lazyPostService.Value;

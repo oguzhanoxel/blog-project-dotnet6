@@ -9,23 +9,23 @@ namespace Services
 {
 	internal sealed class CategoryService : ICategoryService
 	{
-		private readonly IRepositoryManager _repositoryManager;
+		private readonly ICategoryRepository _categoryRepository;
 
-		public CategoryService(IRepositoryManager repositoryManager)
+		public CategoryService(ICategoryRepository categoryRepository)
 		{
-			_repositoryManager = repositoryManager;
+			_categoryRepository = categoryRepository;
 		}
 
 		public async Task<IEnumerable<CategoryListDto>> GetAllAsync(CancellationToken cancellationToken = default)
 		{
-			var categories = await _repositoryManager.CategoryRepository.GetAllAsync(cancellationToken);
+			var categories = await _categoryRepository.GetListAsync(cancellationToken:cancellationToken);
 			var categoryListDto = categories.Adapt<IEnumerable<CategoryListDto>>();
 			return categoryListDto;
 		}
 
 		public async Task<CategoryDto> GetByIdAsync(int id, CancellationToken cancellationToken = default)
 		{
-			var category = await _repositoryManager.CategoryRepository.GetByIdAsync(id, cancellationToken);
+			var category = await _categoryRepository.GetAsync(c => c.Id == id, cancellationToken);
 
 			if (category is null)
 			{
@@ -38,15 +38,14 @@ namespace Services
 
 		public async Task<CategoryDto> CreateAsync(CategoryCreateDto categoryCreateDto, CancellationToken cancellationToken = default)
 		{
-			var category = categoryCreateDto.Adapt<Category>();
-			_repositoryManager.CategoryRepository.Insert(category);
-			await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
+			var mappedCategory = categoryCreateDto.Adapt<Category>();
+			var category = await _categoryRepository.CreateAsync(mappedCategory);
 			return category.Adapt<CategoryDto>();
 		}
 
 		public async Task<CategoryDto> UpdateAsync(int id, CategoryUpdateDto categoryUpdateDto, CancellationToken cancellationToken = default)
 		{
-			var category = await _repositoryManager.CategoryRepository.GetByIdAsync(id, cancellationToken);
+			var category = await _categoryRepository.GetAsync(c => c.Id == id, cancellationToken);
 
 			if(category is null)
 			{
@@ -56,22 +55,22 @@ namespace Services
 			category.Title = categoryUpdateDto.Title;
 			category.Description = categoryUpdateDto.Description;
 
-			await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
+			await _categoryRepository.UpdateAsync(category);
+
 			return category.Adapt<CategoryDto>();
 		}
 
 		public async Task<CategoryDto> DeleteAsync(int id, CancellationToken cancellationToken = default)
 		{
-			var category = await _repositoryManager.CategoryRepository.GetByIdAsync(id, cancellationToken);
+			var category = await _categoryRepository.GetAsync(c => c.Id == id, cancellationToken);
 
 			if(category is null)
 			{
 				throw new CategoryNotFoundException(id);
 			}
 
-			_repositoryManager.CategoryRepository.Remove(category);
+			await _categoryRepository.DeleteAsync(category);
 
-			await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
 			return category.Adapt<CategoryDto>();
 		}
 	}

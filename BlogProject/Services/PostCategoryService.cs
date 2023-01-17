@@ -9,23 +9,23 @@ namespace Services
 {
 	internal sealed class PostCategoryService : IPostCategoryService
 	{
-		private readonly IRepositoryManager _repositoryManager;
+		private readonly IPostCategoryRepository _postCategoryRepository;
 
-		public PostCategoryService(IRepositoryManager repositoryManager)
+		public PostCategoryService(IPostCategoryRepository postCategoryRepository)
 		{
-			_repositoryManager = repositoryManager;
+			_postCategoryRepository = postCategoryRepository;
 		}
 
 		public async Task<IEnumerable<PostCategoryListDto>> GetAllAsync(CancellationToken cancellationToken = default)
 		{
-			var postCategories = await _repositoryManager.PostCategoryRepository.GetAllAsync(cancellationToken);
+			var postCategories = await _postCategoryRepository.GetListAsync(cancellationToken:cancellationToken);
 			var postCategoryListDto = postCategories.Adapt<IEnumerable<PostCategoryListDto>>();
 			return postCategoryListDto;
 		}
 
 		public async Task<PostCategoryDto> GetByIdAsync(int id, CancellationToken cancellationToken = default)
 		{
-			var postCategory = await _repositoryManager.PostCategoryRepository.GetByIdAsync(id, cancellationToken);
+			var postCategory = await _postCategoryRepository.GetAsync(p => p.Id == id, cancellationToken);
 
 			if (postCategory is null)
 			{
@@ -38,15 +38,14 @@ namespace Services
 
 		public async Task<PostCategoryDto> CreateAsync(PostCategoryCreateDto postCategoryCreateDto, CancellationToken cancellationToken = default)
 		{
-			var postCategory = postCategoryCreateDto.Adapt<PostCategory>();
-			_repositoryManager.PostCategoryRepository.Insert(postCategory);
-			await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
+			var mappedPostCategory = postCategoryCreateDto.Adapt<PostCategory>();
+			var postCategory = await _postCategoryRepository.CreateAsync(mappedPostCategory);
 			return postCategory.Adapt<PostCategoryDto>();
 		}
 
 		public async Task<PostCategoryDto> UpdateAsync(int id, PostCategoryUpdateDto postCategoryUpdateDto, CancellationToken cancellationToken = default)
 		{
-			var postCategory = await _repositoryManager.PostCategoryRepository.GetByIdAsync(id, cancellationToken);
+			var postCategory = await _postCategoryRepository.GetAsync(p => p.Id == id, cancellationToken);
 
 			if(postCategory is null)
 			{
@@ -56,22 +55,22 @@ namespace Services
 			postCategory.PostId = postCategoryUpdateDto.PostId;
 			postCategory.CategoryId = postCategoryUpdateDto.CategoryId;
 
-			await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
+			await _postCategoryRepository.UpdateAsync(postCategory);
+
 			return postCategory.Adapt<PostCategoryDto>();
 		}
 
 		public async Task<PostCategoryDto> DeleteAsync(int id, CancellationToken cancellationToken = default)
 		{
-			var postCategory = await _repositoryManager.PostCategoryRepository.GetByIdAsync(id, cancellationToken);
+			var postCategory = await _postCategoryRepository.GetAsync(p => p.Id == id, cancellationToken);
 
 			if(postCategory is null)
 			{
 				throw new PostCategoryNotFoundException(id);
 			}
 
-			_repositoryManager.PostCategoryRepository.Remove(postCategory);
+			await _postCategoryRepository.DeleteAsync(postCategory);
 
-			await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
 			return postCategory.Adapt<PostCategoryDto>();
 		}
 	}

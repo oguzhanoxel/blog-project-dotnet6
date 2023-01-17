@@ -1,6 +1,8 @@
+using Core.Persistence.Repositories;
+
 namespace Domain.Entities
 {
-	public class PostCategory
+	public class PostCategory : Entity
 	{
 		public int Id { get; set; }
 		

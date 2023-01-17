@@ -12,7 +12,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(RepositoryDbContext))]
-    [Migration("20230115184843_added-posts-categories-postCategories")]
+    [Migration("20230117171952_added-posts-categories-postCategories")]
     partial class addedpostscategoriespostCategories
     {
         /// <inheritdoc />
@@ -104,7 +104,7 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.Post", null)
                         .WithMany("PostCategories")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
