@@ -10,9 +10,9 @@ namespace Persistence
 			
 		}
 
-		public DbSet<Post> Posts { get; set; }
-		public DbSet<Category> Categories { get; set; }
-		public DbSet<PostCategory> PostCategories { get; set; }
+		public DbSet<Post>? Posts { get; set; }
+		public DbSet<Category>? Categories { get; set; }
+		public DbSet<PostCategory>? PostCategories { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

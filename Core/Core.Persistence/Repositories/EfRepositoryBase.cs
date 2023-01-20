@@ -40,7 +40,7 @@ namespace Core.Persistence.Repositories
 			return await _context.Set<TEntity>().FirstOrDefaultAsync(predicate);
 		}
 
-		public async Task<IEnumerable<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate = null, CancellationToken cancellationToken = default)
+		public async Task<IEnumerable<TEntity>> GetListAsync(Expression<Func<TEntity, bool>>? predicate = null, CancellationToken cancellationToken = default)
 		{
 			IQueryable<TEntity> queryable = _context.Set<TEntity>();
 			if(predicate is not null) queryable.Where(predicate);

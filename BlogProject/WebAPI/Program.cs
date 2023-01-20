@@ -1,9 +1,10 @@
+using System.Reflection;
 using Domain.Repositories;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Repositories;
 using Services;
-using Services.Abstractions;
 using WebAPI.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,8 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<IServiceManager, ServiceManager>();
-
+builder.Services.AddServicesModule();
 // Repositories
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();

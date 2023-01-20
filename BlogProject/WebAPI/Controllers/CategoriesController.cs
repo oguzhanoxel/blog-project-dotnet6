@@ -1,6 +1,11 @@
 using Contracts.Dtos.CategoryDtos;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Services.Abstractions;
+using Services.Commands.CategoryCommands.CreateCategory;
+using Services.Commands.CategoryCommands.DeleteCategory;
+using Services.Commands.CategoryCommands.UpdateCategory;
+using Services.Queries.CategoryQueries.GetCategoryById;
+using Services.Queries.CategoryQueries.GetCategoryList;
 
 namespace WebAPI.Controllers
 {
@@ -8,50 +13,52 @@ namespace WebAPI.Controllers
 	[Route("api/[controller]")]
 	public class CategoriesController : ControllerBase
 	{
-		private readonly IServiceManager _serviceManager;
+		private readonly IMediator _mediator;
 
-		public CategoriesController(IServiceManager serviceManager)
+		public CategoriesController(IMediator mediator)
 		{
-			_serviceManager = serviceManager;
+			_mediator = mediator;
 		}
 
 		[HttpGet]
 		public async Task<IActionResult> GetList(CancellationToken cancellationToken)
 		{
-			var categoryListDto = await _serviceManager.CategoryService.GetAllAsync(cancellationToken);
-
-			return Ok(categoryListDto);
+			var result = await _mediator.Send(new GetCategoryListQuery());
+			return Ok(result);
 		}
 
-		[HttpGet("{id}")]
-		public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
+		[HttpGet("{Id}")]
+		public async Task<IActionResult> GetById([FromRoute] GetCategoryByIdQuery query, CancellationToken cancellationToken)
 		{
-			var categoryDto = await _serviceManager.CategoryService.GetByIdAsync(id, cancellationToken);
-
-			return Ok(categoryDto);
+			var result = await _mediator.Send(query);
+			return Ok(result);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create([FromBody] CategoryCreateDto categoryCreateDto, CancellationToken cancellationToken)
+		public async Task<IActionResult> Create([FromBody] CreateCategoryCommand command, CancellationToken cancellationToken)
 		{
-			var categoryDto = await _serviceManager.CategoryService.CreateAsync(categoryCreateDto, cancellationToken);
-			return Created("", categoryDto);
+			var result = await _mediator.Send(command);
+			return Created("", result);
 		}
 
-		[HttpPut("{id}")]
-		public async Task<IActionResult> Update(int id,	[FromBody] CategoryUpdateDto categoryUpdateDto, CancellationToken cancellationToken)
+		[HttpPut("{Id}")]
+		public async Task<IActionResult> Update([FromRoute] int Id, [FromBody] CategoryUpdateDto categoryUpdateDto, CancellationToken cancellationToken)
 		{
-			var categoryDto = await _serviceManager.CategoryService.UpdateAsync(id, categoryUpdateDto, cancellationToken);
-
-			return Ok(categoryDto);
+			UpdateCategoryCommand command = new UpdateCategoryCommand()
+			{
+				Id = Id,
+				Title = categoryUpdateDto.Title,
+				Description = categoryUpdateDto.Description
+			};
+			var result = await _mediator.Send(command);
+			return Ok(result);
 		}
 
-		[HttpDelete("{id}")]
-		public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+		[HttpDelete("{Id}")]
+		public async Task<IActionResult> Delete([FromRoute] DeleteCategoryCommand command, CancellationToken cancellationToken)
 		{
-			var categoryDto = await _serviceManager.CategoryService.DeleteAsync(id, cancellationToken);
-
-			return Ok(categoryDto);
+			var result = await _mediator.Send(command);
+			return Ok(result);
 		}
 	}
 }

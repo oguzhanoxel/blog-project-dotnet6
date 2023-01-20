@@ -1,6 +1,11 @@
 using Contracts.Dtos.PostDtos;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Services.Abstractions;
+using Services.Commands.PostCommands.CreatePost;
+using Services.Commands.PostCommands.DeletePost;
+using Services.Commands.PostCommands.UpdatePost;
+using Services.Queries.PostQueries.GetPostById;
+using Services.Queries.PostQueries.GetPostList;
 
 namespace WebAPI.Controllers
 {
@@ -8,50 +13,52 @@ namespace WebAPI.Controllers
 	[Route("api/[controller]")]
 	public class  PostsController : ControllerBase
 	{
-		private readonly IServiceManager _serviceManager;
+		private readonly IMediator _mediator;
 
-		public PostsController(IServiceManager serviceManager)
+		public PostsController(IMediator mediator)
 		{
-			_serviceManager = serviceManager;
+			_mediator = mediator;
 		}
 
 		[HttpGet]
 		public async Task<IActionResult> GetList(CancellationToken cancellationToken)
 		{
-			var postListDto = await _serviceManager.PostService.GetAllAsync(cancellationToken);
-
-			return Ok(postListDto);
+			var postListModel = await _mediator.Send(new GetPostListQuery());
+			return Ok(postListModel);
 		}
 
-		[HttpGet("{id}")]
-		public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
+		[HttpGet("{Id}")]
+		public async Task<IActionResult> GetById([FromRoute] GetPostByIdQuery query, CancellationToken cancellationToken)
 		{
-			var postDto = await _serviceManager.PostService.GetByIdAsync(id, cancellationToken);
-
-			return Ok(postDto);
+			var result = await _mediator.Send(query);
+			return Ok(result);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create([FromBody] PostCreateDto postCreateDto, CancellationToken cancellationToken)
+		public async Task<IActionResult> Create([FromBody] CreatePostCommand command, CancellationToken cancellationToken)
 		{
-			var postDto = await _serviceManager.PostService.CreateAsync(postCreateDto, cancellationToken);
-			return Created("", postDto);
+			var result = await _mediator.Send(command);
+			return Created("", result);
 		}
 
-		[HttpPut("{id}")]
-		public async Task<IActionResult> Update(int id,	[FromBody] PostUpdateDto postUpdateDto, CancellationToken cancellationToken)
+		[HttpPut("{Id}")]
+		public async Task<IActionResult> Update([FromRoute] int id, [FromBody] PostUpdateDto postUpdateDto, CancellationToken cancellationToken)
 		{
-			var postDto = await _serviceManager.PostService.UpdateAsync(id, postUpdateDto, cancellationToken);
-
-			return Ok(postDto);
+			UpdatePostCommand command = new UpdatePostCommand()
+			{
+				Id = id,
+				Title = postUpdateDto.Title,
+				Text = postUpdateDto.Text
+			};
+			var result = await _mediator.Send(command);
+			return Ok(result);
 		}
 
-		[HttpDelete("{id}")]
-		public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+		[HttpDelete("{Id}")]
+		public async Task<IActionResult> Delete([FromRoute] DeletePostCommand command, CancellationToken cancellationToken)
 		{
-			var postDto = await _serviceManager.PostService.DeleteAsync(id, cancellationToken);
-
-			return Ok(postDto);
+			var result = await _mediator.Send(command);
+			return Ok(result);
 		}
 	}
 }
