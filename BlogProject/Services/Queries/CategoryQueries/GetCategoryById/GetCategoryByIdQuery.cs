@@ -1,5 +1,5 @@
 using Contracts.Dtos.CategoryDtos;
-using Domain.Exceptions;
+using Core.CrossCuttingConcers.Exceptions;
 using Domain.Repositories;
 using Mapster;
 using MediatR;
@@ -22,7 +22,7 @@ namespace Services.Queries.CategoryQueries.GetCategoryById
 			public async Task<CategoryDto> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
 			{
 				var category = await _categoryRepository.GetAsync(category => category.Id == request.Id);
-				if(category is null) throw new CategoryNotFoundException(request.Id);
+				if(category is null) throw new NotFoundException("Category Not Found.");
 
 				var mappedCategory = category.Adapt<CategoryDto>();
 				return mappedCategory;

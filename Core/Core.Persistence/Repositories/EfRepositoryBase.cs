@@ -35,7 +35,7 @@ namespace Core.Persistence.Repositories
 			return entity;
 		}
 
-		public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+		public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
 		{
 			return await _context.Set<TEntity>().FirstOrDefaultAsync(predicate);
 		}

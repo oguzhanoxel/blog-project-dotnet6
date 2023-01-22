@@ -1,6 +1,5 @@
 using Contracts.Dtos.PostDtos;
-using Domain.Entities;
-using Domain.Exceptions;
+using Core.CrossCuttingConcers.Exceptions;
 using Domain.Repositories;
 using Mapster;
 using MediatR;
@@ -25,7 +24,7 @@ namespace Services.Commands.PostCommands.UpdatePost
 			public async Task<PostDto> Handle(UpdatePostCommand request, CancellationToken cancellationToken)
 			{
 				var post = await _postRepository.GetAsync(post => post.Id == request.Id);
-				if(post is null) throw new PostNotFoundException(request.Id);
+				if(post is null) throw new NotFoundException("Post Not Found.");
 
 				post.Title = request.Title;
 				post.Text = request.Text;

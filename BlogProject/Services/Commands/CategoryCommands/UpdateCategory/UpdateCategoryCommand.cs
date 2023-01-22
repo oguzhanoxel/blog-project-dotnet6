@@ -1,6 +1,5 @@
 using Contracts.Dtos.CategoryDtos;
-using Domain.Entities;
-using Domain.Exceptions;
+using Core.CrossCuttingConcers.Exceptions;
 using Domain.Repositories;
 using Mapster;
 using MediatR;
@@ -25,7 +24,7 @@ namespace Services.Commands.CategoryCommands.UpdateCategory
 			public async Task<CategoryDto> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
 			{
 				var category = await _categoryRepository.GetAsync(category => category.Id == request.Id);
-				if(category is null) throw new CategoryNotFoundException(request.Id);
+				if(category is null) throw new NotFoundException("Category Not Found.");
 
 				category.Title = request.Title;
 				category.Description = request.Description;

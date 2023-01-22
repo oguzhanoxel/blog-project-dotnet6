@@ -1,5 +1,5 @@
 using Contracts.Dtos.PostDtos;
-using Domain.Exceptions;
+using Core.CrossCuttingConcers.Exceptions;
 using Domain.Repositories;
 using Mapster;
 using MediatR;
@@ -22,7 +22,7 @@ namespace Services.Commands.PostCommands.DeletePost
 			public async Task<PostDto> Handle(DeletePostCommand request, CancellationToken cancellationToken)
 			{
 				var post = await _postRepository.GetAsync(post => post.Id == request.Id);
-				if(post is null) throw new PostNotFoundException(request.Id);
+				if(post is null) throw new NotFoundException("Post Not Found.");
 
 				var deletedPost = await _postRepository.DeleteAsync(post);
 				var mappedPost = deletedPost.Adapt<PostDto>();

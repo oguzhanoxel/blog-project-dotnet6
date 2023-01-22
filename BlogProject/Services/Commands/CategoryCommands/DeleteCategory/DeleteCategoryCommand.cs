@@ -1,5 +1,5 @@
 using Contracts.Dtos.CategoryDtos;
-using Domain.Exceptions;
+using Core.CrossCuttingConcers.Exceptions;
 using Domain.Repositories;
 using Mapster;
 using MediatR;
@@ -22,7 +22,7 @@ namespace Services.Commands.CategoryCommands.DeleteCategory
 			public async Task<CategoryDto> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
 			{
 				var category = await _categoryRepository.GetAsync(category => category.Id == request.Id);
-				if(category is null) throw new CategoryNotFoundException(request.Id);
+				if(category is null) throw new NotFoundException("Category Not Found.");
 
 				var deletedCategory = await _categoryRepository.DeleteAsync(category);
 				var mappedCategory = deletedCategory.Adapt<CategoryDto>();

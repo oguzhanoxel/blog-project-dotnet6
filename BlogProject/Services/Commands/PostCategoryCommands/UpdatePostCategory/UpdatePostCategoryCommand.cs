@@ -1,6 +1,5 @@
 using Contracts.Dtos.PostCategoryDtos;
-using Domain.Entities;
-using Domain.Exceptions;
+using Core.CrossCuttingConcers.Exceptions;
 using Domain.Repositories;
 using Mapster;
 using MediatR;
@@ -25,7 +24,7 @@ namespace Services.Commands.PostCategoryCommands.UpdatePostCategory
 			public async Task<PostCategoryDto> Handle(UpdatePostCategoryCommand request, CancellationToken cancellationToken)
 			{
 				var postCategory = await _postCategoryRepository.GetAsync(postCategory => postCategory.Id == request.Id);
-				if(postCategory is null) throw new PostCategoryNotFoundException(request.Id);
+				if(postCategory is null) throw new NotFoundException("PostCategory Not Found.");
 
 				postCategory.PostId = request.PostId;
 				postCategory.CategoryId = request.CategoryId;

@@ -1,11 +1,11 @@
 using System.Reflection;
+using Core.CrossCuttingConcers.Exceptions;
 using Domain.Repositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Repositories;
 using Services;
-using WebAPI.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +21,6 @@ builder.Services.AddScoped<IPostCategoryRepository, PostCategoryRepository>();
 builder.Services.AddDbContextPool<RepositoryDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("BlogProjectConnectionString"))
 );
-builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -35,7 +34,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.ConfigureCustomExceptionMiddleware();
 
 app.UseHttpsRedirection();
 

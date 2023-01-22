@@ -1,5 +1,5 @@
 using Contracts.Dtos.PostDtos;
-using Domain.Exceptions;
+using Core.CrossCuttingConcers.Exceptions;
 using Domain.Repositories;
 using Mapster;
 using MediatR;
@@ -23,7 +23,7 @@ namespace Services.Queries.PostQueries.GetPostById
 			{
 				var post = await _postRepository.GetAsync(post => post.Id == request.Id);
 
-				if(post is null) throw new PostNotFoundException(request.Id);
+				if(post is null) throw new NotFoundException("Post Not Found.");
 
 				var mappedPost = post.Adapt<PostDto>();
 				return mappedPost;
