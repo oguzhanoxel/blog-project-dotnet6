@@ -3,6 +3,7 @@ using Core.CrossCuttingConcers.Exceptions;
 using Domain.Repositories;
 using Mapster;
 using MediatR;
+using Services.Rules;
 
 namespace Services.Queries.PostCategoryQueries.GetPostCategoryById
 {
@@ -10,19 +11,23 @@ namespace Services.Queries.PostCategoryQueries.GetPostCategoryById
 	{
 		public int Id { get; set; }
 
-		public class GetPostCategoryByIdQueryHandler : IRequestHandler<GetPostCategoryByIdQuery, PostCategoryDto?>
+		public class GetPostCategoryByIdQueryHandler : IRequestHandler<GetPostCategoryByIdQuery, PostCategoryDto>
 		{
 			private readonly IPostCategoryRepository _postCategoryRepository;
+			private readonly PostCategoryBusinessRules _postCategoryBusinessRules;
 
-			public GetPostCategoryByIdQueryHandler(IPostCategoryRepository postCategoryRepository)
+			public GetPostCategoryByIdQueryHandler(IPostCategoryRepository postCategoryRepository, PostCategoryBusinessRules postCategoryBusinessRules)
 			{
 				_postCategoryRepository = postCategoryRepository;
+				_postCategoryBusinessRules = postCategoryBusinessRules;
 			}
 
-			public async Task<PostCategoryDto?> Handle(GetPostCategoryByIdQuery request, CancellationToken cancellationToken)
+			public async Task<PostCategoryDto> Handle(GetPostCategoryByIdQuery request, CancellationToken cancellationToken)
 			{
+				await _postCategoryBusinessRules.PostCategoryShouldExistWhenRequested(request.Id);
+
 				var postCategory = await _postCategoryRepository.GetAsync(postCategory => postCategory.Id == request.Id);
-				if(postCategory is null) throw new NotFoundException("PostCategory Not Found.");
+
 				var mappedPostCategory = postCategory?.Adapt<PostCategoryDto>();
 				return mappedPostCategory;
 			}

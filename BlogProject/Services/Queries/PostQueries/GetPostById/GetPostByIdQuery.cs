@@ -3,6 +3,7 @@ using Core.CrossCuttingConcers.Exceptions;
 using Domain.Repositories;
 using Mapster;
 using MediatR;
+using Services.Rules;
 
 namespace Services.Queries.PostQueries.GetPostById
 {
@@ -11,19 +12,21 @@ namespace Services.Queries.PostQueries.GetPostById
 		public int Id { get; set; }
 
 		public class GetPostByIdQueryHandler : IRequestHandler<GetPostByIdQuery, PostDto>
-		{
+		{			
 			private readonly IPostRepository _postRepository;
+			private readonly PostBusinessRules _postBusinessRules;
 
-			public GetPostByIdQueryHandler(IPostRepository postRepository)
+			public GetPostByIdQueryHandler(IPostRepository postRepository, PostBusinessRules postBusinessRules)
 			{
 				_postRepository = postRepository;
+				_postBusinessRules = postBusinessRules;
 			}
 
 			public async Task<PostDto> Handle(GetPostByIdQuery request, CancellationToken cancellationToken)
 			{
-				var post = await _postRepository.GetAsync(post => post.Id == request.Id);
+				await _postBusinessRules.PostShouldExistWhenRequested(request.Id);
 
-				if(post is null) throw new NotFoundException("Post Not Found.");
+				var post = await _postRepository.GetAsync(post => post.Id == request.Id);
 
 				var mappedPost = post.Adapt<PostDto>();
 				return mappedPost;

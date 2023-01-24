@@ -19,7 +19,9 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IPostCategoryRepository, PostCategoryRepository>();
 
 builder.Services.AddDbContextPool<RepositoryDbContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BlogProjectConnectionString"))
+    options
+    .UseSqlServer(builder.Configuration.GetConnectionString("BlogProjectConnectionString"))
+    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) // Should Change EfRepositoryBase.cs 
 );
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

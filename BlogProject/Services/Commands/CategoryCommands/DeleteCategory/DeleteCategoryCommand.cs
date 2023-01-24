@@ -3,6 +3,7 @@ using Core.CrossCuttingConcers.Exceptions;
 using Domain.Repositories;
 using Mapster;
 using MediatR;
+using Services.Rules;
 
 namespace Services.Commands.CategoryCommands.DeleteCategory
 {
@@ -13,17 +14,20 @@ namespace Services.Commands.CategoryCommands.DeleteCategory
 		public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand, CategoryDto>
 		{
 			private readonly ICategoryRepository _categoryRepository;
+			private readonly CategoryBusinessRules _categoryBusinessRules;
 
-			public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository)
+			public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository, CategoryBusinessRules categoryBusinessRules)
 			{
 				_categoryRepository = categoryRepository;
+				_categoryBusinessRules = categoryBusinessRules;
 			}
 
 			public async Task<CategoryDto> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
 			{
-				var category = await _categoryRepository.GetAsync(category => category.Id == request.Id);
-				if(category is null) throw new NotFoundException("Category Not Found.");
+				await _categoryBusinessRules.CategoryShouldExistWhenRequested(request.Id);
+				await _categoryBusinessRules.CategoryHasNoPostWhenDeleted(request.Id);
 
+				var category = await _categoryRepository.GetAsync(category => category.Id == request.Id);
 				var deletedCategory = await _categoryRepository.DeleteAsync(category);
 				var mappedCategory = deletedCategory.Adapt<CategoryDto>();
 				return mappedCategory;

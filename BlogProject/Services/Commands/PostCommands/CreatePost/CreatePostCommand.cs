@@ -8,8 +8,8 @@ namespace Services.Commands.PostCommands.CreatePost
 {
 	public class CreatePostCommand : IRequest<PostDto>
 	{
-		public string? Title { get; set; }
-		public string? Text { get; set; }
+		public string Title { get; set; }
+		public string Text { get; set; }
 		
 		public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, PostDto>
 		{

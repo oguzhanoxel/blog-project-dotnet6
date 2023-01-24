@@ -3,6 +3,7 @@ using Core.CrossCuttingConcers.Exceptions;
 using Domain.Repositories;
 using Mapster;
 using MediatR;
+using Services.Rules;
 
 namespace Services.Commands.PostCategoryCommands.UpdatePostCategory
 {
@@ -15,17 +16,19 @@ namespace Services.Commands.PostCategoryCommands.UpdatePostCategory
 		public class UpdatePostCategoryCommandHandler : IRequestHandler<UpdatePostCategoryCommand, PostCategoryDto>
 		{
 			private readonly IPostCategoryRepository _postCategoryRepository;
+			private readonly PostCategoryBusinessRules _postCategoryBusinessRules;
 
-			public UpdatePostCategoryCommandHandler(IPostCategoryRepository postCategoryRepository)
+			public UpdatePostCategoryCommandHandler(IPostCategoryRepository postCategoryRepository, PostCategoryBusinessRules postCategoryBusinessRules)
 			{
 				_postCategoryRepository = postCategoryRepository;
+				_postCategoryBusinessRules = postCategoryBusinessRules;
 			}
-
 			public async Task<PostCategoryDto> Handle(UpdatePostCategoryCommand request, CancellationToken cancellationToken)
 			{
-				var postCategory = await _postCategoryRepository.GetAsync(postCategory => postCategory.Id == request.Id);
-				if(postCategory is null) throw new NotFoundException("PostCategory Not Found.");
+				await _postCategoryBusinessRules.PostCategoryShouldExistWhenRequested(request.Id);
 
+				var postCategory = await _postCategoryRepository.GetAsync(postCategory => postCategory.Id == request.Id);
+				
 				postCategory.PostId = request.PostId;
 				postCategory.CategoryId = request.CategoryId;
 
