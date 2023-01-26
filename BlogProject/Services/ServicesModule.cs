@@ -1,6 +1,9 @@
 using System.Reflection;
+using Core.Services.Pipelines.Validation;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Services.Commands.PostCommands.CreatePost;
 using Services.Rules;
 
 namespace Services
@@ -10,6 +13,10 @@ namespace Services
 		public static IServiceCollection AddServicesModule(this IServiceCollection services)
 		{
 			services.AddMediatR(Assembly.GetExecutingAssembly());
+			services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+			
+			services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
 			services.AddScoped<PostBusinessRules>();
 			services.AddScoped<CategoryBusinessRules>();
 			services.AddScoped<PostCategoryBusinessRules>();
