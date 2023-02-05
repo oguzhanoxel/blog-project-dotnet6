@@ -21,14 +21,14 @@ namespace WebAPI.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetList(CancellationToken cancellationToken)
+		public async Task<IActionResult> GetList()
 		{
 			var result = await _mediator.Send(new GetPostCategoryListQuery());
 			return Ok(result);
 		}
 
 		[HttpGet("{Id}")]
-		public async Task<IActionResult> GetById([FromRoute] GetPostCategoryByIdQuery query, CancellationToken cancellationToken)
+		public async Task<IActionResult> GetById([FromRoute] GetPostCategoryByIdQuery query)
 		{
 			var result = await _mediator.Send(query);
 
@@ -36,14 +36,14 @@ namespace WebAPI.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create([FromBody] CreatePostCategoryCommand command, CancellationToken cancellationToken)
+		public async Task<IActionResult> Create([FromBody] CreatePostCategoryCommand command)
 		{
 			var result = await _mediator.Send(command);
 			return Created("", result);
 		}
 
 		[HttpPut("{Id}")]
-		public async Task<IActionResult> Update([FromRoute] int Id, [FromBody] PostCategoryUpdateDto postCategoryUpdateDto, CancellationToken cancellationToken)
+		public async Task<IActionResult> Update([FromRoute] int Id, [FromBody] PostCategoryUpdateDto postCategoryUpdateDto)
 		{
 			UpdatePostCategoryCommand command = new UpdatePostCategoryCommand()
 			{
@@ -56,7 +56,7 @@ namespace WebAPI.Controllers
 		}
 
 		[HttpDelete("{Id}")]
-		public async Task<IActionResult> Delete([FromRoute] DeletePostCategoryCommand command, CancellationToken cancellationToken)
+		public async Task<IActionResult> Delete([FromRoute] DeletePostCategoryCommand command)
 		{
 			var result = await _mediator.Send(command);
 			return Ok(result);

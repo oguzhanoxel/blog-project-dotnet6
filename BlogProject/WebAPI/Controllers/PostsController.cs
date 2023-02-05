@@ -21,28 +21,28 @@ namespace WebAPI.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetList(CancellationToken cancellationToken)
+		public async Task<IActionResult> GetList()
 		{
 			var postListModel = await _mediator.Send(new GetPostListQuery());
 			return Ok(postListModel);
 		}
 
 		[HttpGet("{Id}")]
-		public async Task<IActionResult> GetById([FromRoute] GetPostByIdQuery query, CancellationToken cancellationToken)
+		public async Task<IActionResult> GetById([FromRoute] GetPostByIdQuery query)
 		{
 			var result = await _mediator.Send(query);
 			return Ok(result);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create([FromBody] CreatePostCommand command, CancellationToken cancellationToken)
+		public async Task<IActionResult> Create([FromBody] CreatePostCommand command)
 		{
 			var result = await _mediator.Send(command);
 			return Created("", result);
 		}
 
 		[HttpPut("{Id}")]
-		public async Task<IActionResult> Update([FromRoute] int id, [FromBody] PostUpdateDto postUpdateDto, CancellationToken cancellationToken)
+		public async Task<IActionResult> Update([FromRoute] int id, [FromBody] PostUpdateDto postUpdateDto)
 		{
 			UpdatePostCommand command = new UpdatePostCommand()
 			{
@@ -55,7 +55,7 @@ namespace WebAPI.Controllers
 		}
 
 		[HttpDelete("{Id}")]
-		public async Task<IActionResult> Delete([FromRoute] DeletePostCommand command, CancellationToken cancellationToken)
+		public async Task<IActionResult> Delete([FromRoute] DeletePostCommand command)
 		{
 			var result = await _mediator.Send(command);
 			return Ok(result);

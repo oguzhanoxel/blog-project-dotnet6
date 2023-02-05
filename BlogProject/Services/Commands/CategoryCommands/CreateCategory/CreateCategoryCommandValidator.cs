@@ -7,13 +7,11 @@ namespace Services.Commands.CategoryCommands.CreateCategory
 		public CreateCategoryCommandValidator()
 		{
 			RuleFor(c => c.Title)
-				.NotNull()
 				.NotEmpty()
 				.MinimumLength(10)
 				.MaximumLength(75);
 
 			RuleFor(p => p.Description)
-				.NotNull()
 				.NotEmpty();
 		}
 	}
