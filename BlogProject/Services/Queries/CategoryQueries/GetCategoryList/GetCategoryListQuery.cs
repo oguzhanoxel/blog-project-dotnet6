@@ -5,10 +5,10 @@ using MediatR;
 
 namespace Services.Queries.CategoryQueries.GetCategoryList
 {
-	public class GetCategoryListQuery : IRequest<IList<CategoryListDto>>
+	public class GetCategoryListQuery : IRequest<IList<CategoryDto>>
 	{
 
-		public class GetCategoryListQueryHandler : IRequestHandler<GetCategoryListQuery, IList<CategoryListDto>>
+		public class GetCategoryListQueryHandler : IRequestHandler<GetCategoryListQuery, IList<CategoryDto>>
 		{
 			private readonly ICategoryRepository _categoryRepository;
 
@@ -17,10 +17,10 @@ namespace Services.Queries.CategoryQueries.GetCategoryList
 				_categoryRepository = categoryRepository;
 			}
 
-			public async Task<IList<CategoryListDto>> Handle(GetCategoryListQuery request, CancellationToken cancellationToken)
+			public async Task<IList<CategoryDto>> Handle(GetCategoryListQuery request, CancellationToken cancellationToken)
 			{
 				var categories = await _categoryRepository.GetListAsync();
-				var mappedCategories = categories.Adapt<IList<CategoryListDto>>();
+				var mappedCategories = categories.Adapt<IList<CategoryDto>>();
 				return mappedCategories;
 			}
 		}

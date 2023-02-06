@@ -17,12 +17,6 @@ namespace BlogProject.Tests.TestSetup.Mocks
 
 		public Mock<IPostRepository> GetPostRepository()
 		{
-			_context.AddRange(
-				
-			);
-			_context.SaveChanges();
-
-
 			Mock<IPostRepository> repository = new Mock<IPostRepository>();
 
 			repository
@@ -67,6 +61,108 @@ namespace BlogProject.Tests.TestSetup.Mocks
 				{
 					var post = _context.Posts.FirstOrDefault(predicate);
 					return post;
+				});
+
+			return repository;
+		}
+
+		public Mock<ICategoryRepository> GetCategoryRepository()
+		{
+			Mock<ICategoryRepository> repository = new Mock<ICategoryRepository>();
+
+			repository
+				.Setup(r => r.CreateAsync(It.IsAny<Category>()))
+				.ReturnsAsync((Category category) =>
+				{
+					_context.Categories.Add(category);
+					_context.SaveChanges();
+					return category;
+				});
+
+			repository
+				.Setup(r => r.DeleteAsync(It.IsAny<Category>()))
+				.ReturnsAsync((Category category) =>
+				{
+					_context.Categories.Remove(category);
+					_context.SaveChanges();
+					return category;
+				});
+
+			repository
+				.Setup(r => r.UpdateAsync(It.IsAny<Category>()))
+				.ReturnsAsync((Category category) =>
+				{
+					_context.Categories.Update(category);
+					_context.SaveChanges();
+					return category;
+				});
+
+			repository
+				.Setup(r => r.GetListAsync(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync((Expression<Func<Category, bool>> predicate, CancellationToken cancellationToken) =>
+				{
+					var category = _context.Categories;
+					if (predicate is not null) category.Where(predicate);
+					return category.ToList();
+				});
+
+			repository
+				.Setup(r => r.GetAsync(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync((Expression<Func<Category, bool>> predicate, CancellationToken cancellationToken) =>
+				{
+					var category = _context.Categories.FirstOrDefault(predicate);
+					return category;
+				});
+
+			return repository;
+		}
+
+		public Mock<IPostCategoryRepository> GetPostCategoryRepository()
+		{
+			Mock<IPostCategoryRepository> repository = new Mock<IPostCategoryRepository>();
+
+			repository
+				.Setup(r => r.CreateAsync(It.IsAny<PostCategory>()))
+				.ReturnsAsync((PostCategory postCategory) =>
+				{
+					_context.PostCategories.Add(postCategory);
+					_context.SaveChanges();
+					return postCategory;
+				});
+
+			repository
+				.Setup(r => r.DeleteAsync(It.IsAny<PostCategory>()))
+				.ReturnsAsync((PostCategory postCategory) =>
+				{
+					_context.PostCategories.Remove(postCategory);
+					_context.SaveChanges();
+					return postCategory;
+				});
+
+			repository
+				.Setup(r => r.UpdateAsync(It.IsAny<PostCategory>()))
+				.ReturnsAsync((PostCategory postCategory) =>
+				{
+					_context.PostCategories.Update(postCategory);
+					_context.SaveChanges();
+					return postCategory;
+				});
+
+			repository
+				.Setup(r => r.GetListAsync(It.IsAny<Expression<Func<PostCategory, bool>>>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync((Expression<Func<PostCategory, bool>> predicate, CancellationToken cancellationToken) =>
+				{
+					var postCategory = _context.PostCategories;
+					if (predicate is not null) postCategory.Where(predicate);
+					return postCategory.ToList();
+				});
+
+			repository
+				.Setup(r => r.GetAsync(It.IsAny<Expression<Func<PostCategory, bool>>>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync((Expression<Func<PostCategory, bool>> predicate, CancellationToken cancellationToken) =>
+				{
+					var postCategory = _context.PostCategories.FirstOrDefault(predicate);
+					return postCategory;
 				});
 
 			return repository;

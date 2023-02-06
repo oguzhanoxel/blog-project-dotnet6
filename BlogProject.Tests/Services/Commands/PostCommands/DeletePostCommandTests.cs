@@ -30,7 +30,7 @@ public class DeletePostCommandTests : IClassFixture<CommonTestFixture>
         DeletePostCommandHandler handler = new DeletePostCommandHandler(repository, businessRules);
 
         // Act
-        var result = handler.Handle(command, new CancellationToken());
+        var result = handler.Handle(command, default);
 
         // Assert
 		result.IsCompletedSuccessfully.Should().BeFalse();

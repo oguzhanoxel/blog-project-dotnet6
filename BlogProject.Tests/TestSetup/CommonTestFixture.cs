@@ -11,6 +11,8 @@ namespace BlogProject.Tests.TestSetup
 			Context = new TestDbContext();
 
 			Context.AddPosts();
+			Context.AddCategories();
+			Context.AddPostCategories();
 			Context.SaveChanges();
 		}
 	}	

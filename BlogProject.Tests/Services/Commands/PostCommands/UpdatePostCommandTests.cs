@@ -18,7 +18,7 @@ namespace BlogProject.Tests.Services.Commands.PostCommands
 		}
 
 		[Theory]
-        [InlineData("abc", "")]
+		[InlineData("abc", "")]
 		[InlineData("", "")]
 		[InlineData(null, null)]
 		public void WhenInvalidCommandGiven_UpdatePostCommandValidator_ShouldReturnErrors(string title, string text)
@@ -36,8 +36,8 @@ namespace BlogProject.Tests.Services.Commands.PostCommands
 			var result = validator.Validate(command);
 
 			// Assert
-            result.Errors.Count.Should().BeGreaterThan(0);
-            result.IsValid.Should().BeFalse();
+			result.Errors.Count.Should().BeGreaterThan(0);
+			result.IsValid.Should().BeFalse();
 		}
 
 		[Fact]

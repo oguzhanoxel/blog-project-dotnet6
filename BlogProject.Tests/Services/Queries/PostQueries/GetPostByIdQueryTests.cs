@@ -17,7 +17,7 @@ namespace BlogProject.Tests.Services.Queries.PostQueries
 			_repository = new RepositoryMock(testFixture.Context);
 		}
 
-				[Fact]
+		[Fact]
 		public void WhenNonExistPostIdGiven_GetPostByIdQueryHandler_ShouldReturnException()
 		{
 			// Arrange
@@ -25,10 +25,9 @@ namespace BlogProject.Tests.Services.Queries.PostQueries
 			{
 				Id = 0
 			};
-			
+
 			var repository = _repository.GetPostRepository().Object;
 			var businessRules = new PostBusinessRules(repository);
-			var requestedResult = repository.GetAsync(post => post.Id == query.Id);
 
 			GetPostByIdQueryHandler handler = new GetPostByIdQueryHandler(repository, businessRules);
 
@@ -48,7 +47,7 @@ namespace BlogProject.Tests.Services.Queries.PostQueries
 			{
 				Id = 2
 			};
-			
+
 			var repository = _repository.GetPostRepository().Object;
 			var businessRules = new PostBusinessRules(repository);
 			var requestedResult = repository.GetAsync(post => post.Id == query.Id);
