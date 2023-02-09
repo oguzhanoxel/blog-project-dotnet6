@@ -28,8 +28,9 @@ namespace Services.Commands.CategoryCommands.DeleteCategory
 				await _categoryBusinessRules.CategoryHasNoPostWhenDeleted(request.Id);
 
 				var category = await _categoryRepository.GetAsync(category => category.Id == request.Id);
-				var deletedCategory = await _categoryRepository.DeleteAsync(category);
-				var mappedCategory = deletedCategory.Adapt<CategoryDto>();
+				
+				await _categoryRepository.DeleteAsync(category);
+				var mappedCategory = category.Adapt<CategoryDto>();
 				return mappedCategory;
 			}
 		}

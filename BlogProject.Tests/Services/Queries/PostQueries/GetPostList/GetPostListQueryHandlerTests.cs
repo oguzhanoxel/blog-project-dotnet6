@@ -1,19 +1,20 @@
 using BlogProject.Tests.TestSetup;
 using BlogProject.Tests.TestSetup.Mocks;
+using BlogProject.Tests.TestSetup.TestDb;
 using Contracts.Dtos.PostDtos;
 using FluentAssertions;
 using Services.Queries.PostQueries.GetPostList;
 using static Services.Queries.PostQueries.GetPostList.GetPostListQuery;
 
-namespace BlogProject.Tests.Services.Queries.PostQueries
+namespace BlogProject.Tests.Services.Queries.PostQueries.GetPostList
 {
-	public class GetPostListQueryTests : IClassFixture<CommonTestFixture>
+	public class GetPostListQueryHandlerTests : IClassFixture<CommonTestFixture>
 	{
-		private readonly RepositoryMock _repository;
+		private readonly PostRepository _repository;
 
-		public GetPostListQueryTests(CommonTestFixture testFixture)
+		public GetPostListQueryHandlerTests(CommonTestFixture testFixture)
 		{
-			_repository = new RepositoryMock(testFixture.Context);
+			_repository = new PostRepository(testFixture.Context);
 		}
 
 		[Fact]
@@ -22,9 +23,7 @@ namespace BlogProject.Tests.Services.Queries.PostQueries
 			// Arrange
 			GetPostListQuery query = new GetPostListQuery();
 
-			var repository = _repository.GetPostRepository().Object;
-
-			GetPostListQueryHandler handler = new GetPostListQueryHandler(repository);
+			GetPostListQueryHandler handler = new GetPostListQueryHandler(_repository);
 
 			// Act
 			var result = handler.Handle(query, default);

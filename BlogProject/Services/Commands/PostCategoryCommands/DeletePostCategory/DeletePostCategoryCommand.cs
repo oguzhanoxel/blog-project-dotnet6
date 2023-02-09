@@ -28,8 +28,8 @@ namespace Services.Commands.PostCategoryCommands.DeletePostCategory
 
 				var postCategory = await _postCategoryRepository.GetAsync(postCategory => postCategory.Id == request.Id);
 
-				var deletedPostCategory = await _postCategoryRepository.DeleteAsync(postCategory);
-				var mappedPostCategory = deletedPostCategory.Adapt<PostCategoryDto>();
+				await _postCategoryRepository.DeleteAsync(postCategory);
+				var mappedPostCategory = postCategory.Adapt<PostCategoryDto>();
 				return mappedPostCategory;
 			}
 		}

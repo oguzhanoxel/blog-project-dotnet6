@@ -28,11 +28,10 @@ namespace Core.Persistence.Repositories
 			return entity;
 		}
 
-		public async Task<TEntity> DeleteAsync(TEntity entity)
+		public async Task DeleteAsync(TEntity entity)
 		{
 			_context.Entry(entity).State = EntityState.Deleted;
 			await _context.SaveChangesAsync();
-			return entity;
 		}
 
 		public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)

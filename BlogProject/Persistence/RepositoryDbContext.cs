@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 {
-	public sealed class RepositoryDbContext : DbContext
+	public class RepositoryDbContext : DbContext
 	{
 		public RepositoryDbContext(DbContextOptions options) : base(options)
 		{
@@ -16,7 +16,20 @@ namespace Persistence
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.ApplyConfigurationsFromAssembly(typeof(RepositoryDbContext).Assembly);
+			modelBuilder.Entity<PostCategory>()
+				.HasKey(pc => new { pc.PostId, pc.CategoryId });
+
+			modelBuilder.Entity<PostCategory>()
+				.HasOne(pc => pc.Post)
+				.WithMany(p => p.PostCategories)
+				.HasForeignKey(pc => pc.PostId)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			modelBuilder.Entity<PostCategory>()
+				.HasOne(pc => pc.Category)
+				.WithMany(c => c.PostCategories)
+				.HasForeignKey(pc => pc.CategoryId)
+				.OnDelete(DeleteBehavior.NoAction);
 		}
 	}
 }

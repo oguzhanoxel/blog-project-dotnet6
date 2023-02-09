@@ -47,8 +47,7 @@ namespace WebAPI.Controllers
 			UpdateCategoryCommand command = new UpdateCategoryCommand()
 			{
 				Id = Id,
-				Title = categoryUpdateDto.Title,
-				Description = categoryUpdateDto.Description
+				Title = categoryUpdateDto.Title
 			};
 			var result = await _mediator.Send(command);
 			return Ok(result);

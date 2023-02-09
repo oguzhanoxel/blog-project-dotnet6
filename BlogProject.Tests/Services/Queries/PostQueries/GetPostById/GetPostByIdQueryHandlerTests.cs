@@ -1,20 +1,20 @@
 using BlogProject.Tests.TestSetup;
-using BlogProject.Tests.TestSetup.Mocks;
+using BlogProject.Tests.TestSetup.TestDb;
 using Contracts.Dtos.PostDtos;
 using FluentAssertions;
 using Services.Queries.PostQueries.GetPostById;
 using Services.Rules;
 using static Services.Queries.PostQueries.GetPostById.GetPostByIdQuery;
 
-namespace BlogProject.Tests.Services.Queries.PostQueries
+namespace BlogProject.Tests.Services.Queries.PostQueries.GetPostById
 {
-	public class GetPostByIdQueryTests : IClassFixture<CommonTestFixture>
+	public class GetPostByIdQueryHandlerTests : IClassFixture<CommonTestFixture>
 	{
-		private readonly RepositoryMock _repository;
+		private readonly PostRepository _repository;
 
-		public GetPostByIdQueryTests(CommonTestFixture testFixture)
+		public GetPostByIdQueryHandlerTests(CommonTestFixture testFixture)
 		{
-			_repository = new RepositoryMock(testFixture.Context);
+			_repository = new PostRepository(testFixture.Context);
 		}
 
 		[Fact]
@@ -26,10 +26,9 @@ namespace BlogProject.Tests.Services.Queries.PostQueries
 				Id = 0
 			};
 
-			var repository = _repository.GetPostRepository().Object;
-			var businessRules = new PostBusinessRules(repository);
+			var businessRules = new PostBusinessRules(_repository);
 
-			GetPostByIdQueryHandler handler = new GetPostByIdQueryHandler(repository, businessRules);
+			GetPostByIdQueryHandler handler = new GetPostByIdQueryHandler(_repository, businessRules);
 
 			// Act
 			var result = handler.Handle(query, default);
@@ -48,11 +47,10 @@ namespace BlogProject.Tests.Services.Queries.PostQueries
 				Id = 2
 			};
 
-			var repository = _repository.GetPostRepository().Object;
-			var businessRules = new PostBusinessRules(repository);
-			var requestedResult = repository.GetAsync(post => post.Id == query.Id);
+			var businessRules = new PostBusinessRules(_repository);
+			var requestedResult = _repository.GetAsync(post => post.Id == query.Id);
 
-			GetPostByIdQueryHandler handler = new GetPostByIdQueryHandler(repository, businessRules);
+			GetPostByIdQueryHandler handler = new GetPostByIdQueryHandler(_repository, businessRules);
 
 			// Act
 			var result = handler.Handle(query, default);

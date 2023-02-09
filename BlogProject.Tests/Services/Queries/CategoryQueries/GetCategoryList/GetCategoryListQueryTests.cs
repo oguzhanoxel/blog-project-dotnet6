@@ -1,19 +1,19 @@
 using BlogProject.Tests.TestSetup;
-using BlogProject.Tests.TestSetup.Mocks;
+using BlogProject.Tests.TestSetup.TestDb;
 using Contracts.Dtos.CategoryDtos;
 using FluentAssertions;
 using Services.Queries.CategoryQueries.GetCategoryList;
 using static Services.Queries.CategoryQueries.GetCategoryList.GetCategoryListQuery;
 
-namespace BlogProject.Tests.Services.Queries.CategoryQueries
+namespace BlogProject.Tests.Services.Queries.CategoryQueries.GetCategoryList
 {
-	public class GetCategoryListQueryTests : IClassFixture<CommonTestFixture>
+	public class GetCategoryListQueryHandlerTests : IClassFixture<CommonTestFixture>
 	{
-		private readonly RepositoryMock _repository;
+		private readonly CategoryRepository _repository;
 
-		public GetCategoryListQueryTests(CommonTestFixture testFixture)
+		public GetCategoryListQueryHandlerTests(CommonTestFixture testFixture)
 		{
-			_repository = new RepositoryMock(testFixture.Context);
+			_repository = new CategoryRepository(testFixture.Context);
 		}
 
 		[Fact]
@@ -22,9 +22,7 @@ namespace BlogProject.Tests.Services.Queries.CategoryQueries
 			// Arrange
 			GetCategoryListQuery query = new GetCategoryListQuery();
 
-			var repository = _repository.GetCategoryRepository().Object;
-
-			GetCategoryListQueryHandler handler = new GetCategoryListQueryHandler(repository);
+			GetCategoryListQueryHandler handler = new GetCategoryListQueryHandler(_repository);
 
 			// Act
 			var result = handler.Handle(query, default);

@@ -28,8 +28,8 @@ namespace Services.Commands.PostCommands.DeletePost
 
 				var post = await _postRepository.GetAsync(post => post.Id == request.Id);
 
-				var deletedPost = await _postRepository.DeleteAsync(post);
-				var mappedPost = deletedPost.Adapt<PostDto>();
+				await _postRepository.DeleteAsync(post);
+				var mappedPost = post.Adapt<PostDto>();
 				return mappedPost;
 			}
 		}

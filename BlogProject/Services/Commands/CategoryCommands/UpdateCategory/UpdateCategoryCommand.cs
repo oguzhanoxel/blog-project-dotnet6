@@ -32,7 +32,6 @@ namespace Services.Commands.CategoryCommands.UpdateCategory
 				var category = await _categoryRepository.GetAsync(category => category.Id == request.Id);
 
 				category.Title = request.Title;
-				category.Description = request.Description;
 
 				var updatedCategory = await _categoryRepository.UpdateAsync(category);
 				var mappedCategory = updatedCategory.Adapt<CategoryDto>();

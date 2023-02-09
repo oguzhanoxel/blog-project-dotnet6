@@ -1,19 +1,20 @@
 using BlogProject.Tests.TestSetup;
 using BlogProject.Tests.TestSetup.Mocks;
+using BlogProject.Tests.TestSetup.TestDb;
 using FluentAssertions;
 using Services.Commands.PostCommands.DeletePost;
 using Services.Rules;
 using static Services.Commands.PostCommands.DeletePost.DeletePostCommand;
 
-namespace BlogProject.Tests.Services.Commands.PostCommands;
+namespace BlogProject.Tests.Services.Commands.PostCommands.DeletePost;
 
-public class DeletePostCommandTests : IClassFixture<CommonTestFixture>
+public class DeletePostCommandHandlerTests : IClassFixture<CommonTestFixture>
 {
-	private readonly RepositoryMock _repository;
+	private readonly PostRepository _repository;
 
-	public DeletePostCommandTests(CommonTestFixture testFixture)
+	public DeletePostCommandHandlerTests(CommonTestFixture testFixture)
     {
-        _repository = new RepositoryMock(testFixture.Context);
+        _repository = new PostRepository(testFixture.Context);
     }
 
     [Fact]
@@ -24,10 +25,9 @@ public class DeletePostCommandTests : IClassFixture<CommonTestFixture>
 			Id = 0
         };
 
-        var repository = _repository.GetPostRepository().Object;
-		var businessRules = new PostBusinessRules(repository);
+		var businessRules = new PostBusinessRules(_repository);
 
-        DeletePostCommandHandler handler = new DeletePostCommandHandler(repository, businessRules);
+        DeletePostCommandHandler handler = new DeletePostCommandHandler(_repository, businessRules);
 
         // Act
         var result = handler.Handle(command, default);
@@ -45,12 +45,10 @@ public class DeletePostCommandTests : IClassFixture<CommonTestFixture>
 			Id = 2
         };
 
-        var repository = _repository.GetPostRepository().Object;
-        
-		var businessRules = new PostBusinessRules(repository);
-		var requestedResult = repository.GetAsync(post => post.Id == command.Id);
+		var businessRules = new PostBusinessRules(_repository);
+		var requestedResult = _repository.GetAsync(post => post.Id == command.Id);
 
-        DeletePostCommandHandler handler = new DeletePostCommandHandler(repository, businessRules);
+        DeletePostCommandHandler handler = new DeletePostCommandHandler(_repository, businessRules);
 
         // Act
         var result = handler.Handle(command, default);
@@ -61,6 +59,6 @@ public class DeletePostCommandTests : IClassFixture<CommonTestFixture>
 		result.Result.Title.Should().Be(requestedResult.Result.Title);
 		result.Result.Text.Should().Be(requestedResult.Result.Text);
 
-        repository.GetAsync(post => post.Id == command.Id).Result.Should().BeNull();
+        _repository.GetAsync(post => post.Id == command.Id).Result.Should().BeNull();
     }
 }
