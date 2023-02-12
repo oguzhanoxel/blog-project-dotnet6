@@ -10,10 +10,12 @@ namespace BlogProject.Tests.Services.Queries.CategoryQueries.GetCategoryList
 	public class GetCategoryListQueryHandlerTests : IClassFixture<CommonTestFixture>
 	{
 		private readonly CategoryRepository _repository;
+		private readonly GetCategoryListQueryHandler _handler;
 
 		public GetCategoryListQueryHandlerTests(CommonTestFixture testFixture)
 		{
 			_repository = new CategoryRepository(testFixture.Context);
+			_handler = new GetCategoryListQueryHandler(_repository);
 		}
 
 		[Fact]
@@ -22,10 +24,8 @@ namespace BlogProject.Tests.Services.Queries.CategoryQueries.GetCategoryList
 			// Arrange
 			GetCategoryListQuery query = new GetCategoryListQuery();
 
-			GetCategoryListQueryHandler handler = new GetCategoryListQueryHandler(_repository);
-
 			// Act
-			var result = handler.Handle(query, default);
+			var result = _handler.Handle(query, CancellationToken.None);
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeTrue();

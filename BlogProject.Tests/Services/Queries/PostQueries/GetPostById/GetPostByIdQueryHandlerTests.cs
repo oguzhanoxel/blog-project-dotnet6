@@ -11,10 +11,14 @@ namespace BlogProject.Tests.Services.Queries.PostQueries.GetPostById
 	public class GetPostByIdQueryHandlerTests : IClassFixture<CommonTestFixture>
 	{
 		private readonly PostRepository _repository;
+		private readonly PostBusinessRules _businessRules;
+		private readonly GetPostByIdQueryHandler _handler;
 
 		public GetPostByIdQueryHandlerTests(CommonTestFixture testFixture)
 		{
 			_repository = new PostRepository(testFixture.Context);
+			_businessRules = new PostBusinessRules(_repository);
+			_handler = new GetPostByIdQueryHandler(_repository, _businessRules);
 		}
 
 		[Fact]
@@ -26,12 +30,8 @@ namespace BlogProject.Tests.Services.Queries.PostQueries.GetPostById
 				Id = 0
 			};
 
-			var businessRules = new PostBusinessRules(_repository);
-
-			GetPostByIdQueryHandler handler = new GetPostByIdQueryHandler(_repository, businessRules);
-
 			// Act
-			var result = handler.Handle(query, default);
+			var result = _handler.Handle(query, default);
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeFalse();
@@ -47,13 +47,10 @@ namespace BlogProject.Tests.Services.Queries.PostQueries.GetPostById
 				Id = 2
 			};
 
-			var businessRules = new PostBusinessRules(_repository);
 			var requestedResult = _repository.GetAsync(post => post.Id == query.Id);
 
-			GetPostByIdQueryHandler handler = new GetPostByIdQueryHandler(_repository, businessRules);
-
 			// Act
-			var result = handler.Handle(query, default);
+			var result = _handler.Handle(query, default);
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeTrue();

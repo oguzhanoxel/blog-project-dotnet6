@@ -1,5 +1,4 @@
 using BlogProject.Tests.TestSetup;
-using BlogProject.Tests.TestSetup.Mocks;
 using BlogProject.Tests.TestSetup.TestDb;
 using FluentAssertions;
 using Services.Commands.CategoryCommands.DeleteCategory;
@@ -12,11 +11,15 @@ namespace BlogProject.Tests.Services.Commands.CategoryCommands.DeleteCategory
 	{
 		private readonly CategoryRepository _categoryRepository;
 		private readonly PostCategoryRepository _postCategoryRepository;
+		private readonly CategoryBusinessRules _businessRules;
+		private readonly DeleteCategoryCommandHandler _handler;
 
 		public DeleteCategoryCommandHandlerTests(CommonTestFixture testFixture)
 		{
 			_categoryRepository = new CategoryRepository(testFixture.Context);
 			_postCategoryRepository = new PostCategoryRepository(testFixture.Context);
+			_businessRules = new CategoryBusinessRules(_categoryRepository, _postCategoryRepository);
+			_handler = new DeleteCategoryCommandHandler(_categoryRepository, _businessRules);
 		}
 
 		[Fact]
@@ -28,14 +31,10 @@ namespace BlogProject.Tests.Services.Commands.CategoryCommands.DeleteCategory
 				Id = 1
 			};
 
-
-			var businessRules = new CategoryBusinessRules(_categoryRepository, _postCategoryRepository);
 			var requestedResult = _categoryRepository.GetAsync(category => category.Id == command.Id);
 
-			DeleteCategoryCommandHandler handler = new DeleteCategoryCommandHandler(_categoryRepository, businessRules);
-
 			// Act
-			var result = handler.Handle(command, default);
+			var result = _handler.Handle(command, CancellationToken.None);
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeFalse();
@@ -51,13 +50,8 @@ namespace BlogProject.Tests.Services.Commands.CategoryCommands.DeleteCategory
 				Id = 0
 			};
 
-			var businessRules = new CategoryBusinessRules(_categoryRepository, _postCategoryRepository);
-			var requestedResult = _categoryRepository.GetAsync(category => category.Id == command.Id);
-
-			DeleteCategoryCommandHandler handler = new DeleteCategoryCommandHandler(_categoryRepository, businessRules);
-
 			// Act
-			var result = handler.Handle(command, default);
+			var result = _handler.Handle(command, CancellationToken.None);
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeFalse();
@@ -73,13 +67,10 @@ namespace BlogProject.Tests.Services.Commands.CategoryCommands.DeleteCategory
 				Id = 3 // has no post
 			};
 
-			var businessRules = new CategoryBusinessRules(_categoryRepository, _postCategoryRepository);
 			var requestedResult = _categoryRepository.GetAsync(category => category.Id == command.Id);
 
-			DeleteCategoryCommandHandler handler = new DeleteCategoryCommandHandler(_categoryRepository, businessRules);
-
 			// Act
-			var result = handler.Handle(command, default);
+			var result = _handler.Handle(command, CancellationToken.None);
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeTrue();

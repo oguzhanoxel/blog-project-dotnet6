@@ -11,9 +11,6 @@ namespace Services.Commands.CategoryCommands.CreateCategory
 				.NotEmpty()
 				.MinimumLength(10)
 				.MaximumLength(75);
-
-			RuleFor(p => p.Description)
-				.NotEmpty();
 		}
 	}
 }

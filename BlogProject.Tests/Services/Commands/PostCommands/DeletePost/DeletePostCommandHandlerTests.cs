@@ -1,5 +1,4 @@
 using BlogProject.Tests.TestSetup;
-using BlogProject.Tests.TestSetup.Mocks;
 using BlogProject.Tests.TestSetup.TestDb;
 using FluentAssertions;
 using Services.Commands.PostCommands.DeletePost;
@@ -11,10 +10,14 @@ namespace BlogProject.Tests.Services.Commands.PostCommands.DeletePost;
 public class DeletePostCommandHandlerTests : IClassFixture<CommonTestFixture>
 {
 	private readonly PostRepository _repository;
+	private readonly PostBusinessRules _businessRules;
+	private readonly DeletePostCommandHandler _handler;
 
 	public DeletePostCommandHandlerTests(CommonTestFixture testFixture)
     {
         _repository = new PostRepository(testFixture.Context);
+        _businessRules = new PostBusinessRules(_repository);
+        _handler = new DeletePostCommandHandler(_repository, _businessRules);
     }
 
     [Fact]
@@ -25,12 +28,8 @@ public class DeletePostCommandHandlerTests : IClassFixture<CommonTestFixture>
 			Id = 0
         };
 
-		var businessRules = new PostBusinessRules(_repository);
-
-        DeletePostCommandHandler handler = new DeletePostCommandHandler(_repository, businessRules);
-
         // Act
-        var result = handler.Handle(command, default);
+        var result = _handler.Handle(command, CancellationToken.None);
 
         // Assert
 		result.IsCompletedSuccessfully.Should().BeFalse();
@@ -45,13 +44,10 @@ public class DeletePostCommandHandlerTests : IClassFixture<CommonTestFixture>
 			Id = 2
         };
 
-		var businessRules = new PostBusinessRules(_repository);
 		var requestedResult = _repository.GetAsync(post => post.Id == command.Id);
 
-        DeletePostCommandHandler handler = new DeletePostCommandHandler(_repository, businessRules);
-
         // Act
-        var result = handler.Handle(command, default);
+        var result = _handler.Handle(command, default);
 
         // Assert
 		result.IsCompletedSuccessfully.Should().BeTrue();

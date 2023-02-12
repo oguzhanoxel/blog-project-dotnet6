@@ -12,11 +12,15 @@ namespace BlogProject.Tests.Services.Commands.CategoryCommands.UpdateCategory
 	{
 		private readonly CategoryRepository _categoryRepository;
 		private readonly PostCategoryRepository _postCategoryRepository;
+		private readonly CategoryBusinessRules _businessRules;
+		private readonly UpdateCategoryCommandHandler _handler;
 
 		public UpdateCategoryCommandHandlerTests(CommonTestFixture testFixture)
 		{
 			_categoryRepository = new CategoryRepository(testFixture.Context);
 			_postCategoryRepository = new PostCategoryRepository(testFixture.Context);
+			_businessRules = new CategoryBusinessRules(_categoryRepository, _postCategoryRepository);
+			_handler = new UpdateCategoryCommandHandler(_categoryRepository, _businessRules);
 		}
 
 		[Fact]
@@ -26,16 +30,11 @@ namespace BlogProject.Tests.Services.Commands.CategoryCommands.UpdateCategory
 			UpdateCategoryCommand command = new UpdateCategoryCommand()
 			{
 				Id = 0,
-				Title = "Update Test Title",
-				Description = "Update Test Description"
+				Title = "Update Test Title"
 			};
 
-			var businessRules = new CategoryBusinessRules(_categoryRepository, _postCategoryRepository);
-
-			UpdateCategoryCommandHandler handler = new UpdateCategoryCommandHandler(_categoryRepository, businessRules);
-
 			// Act
-			var result = handler.Handle(command, default);
+			var result = _handler.Handle(command, default);
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeFalse();
@@ -49,28 +48,18 @@ namespace BlogProject.Tests.Services.Commands.CategoryCommands.UpdateCategory
 			UpdateCategoryCommand command = new UpdateCategoryCommand()
 			{
 				Id = 2,
-				Title = "Update Test Title",
-				Description = "Update Test Description"
+				Title = "Update Test Title"
 			};
 
-			var businessRules = new CategoryBusinessRules(_categoryRepository, _postCategoryRepository);
 			var requestedResult = _categoryRepository.GetAsync(post => post.Id == command.Id);
 
-			var cloneCategory = new Category()
-			{
-				Id = requestedResult.Result.Id,
-				Title = requestedResult.Result.Title,
-			};
-
-			UpdateCategoryCommandHandler handler = new UpdateCategoryCommandHandler(_categoryRepository, businessRules);
-
 			// Act
-			var result = handler.Handle(command, default);
+			var result = _handler.Handle(command, default);
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeTrue();
-			result.Result.Id.Should().Be(cloneCategory.Id);
-			result.Result.Title.Should().NotBe(cloneCategory.Title);
+			result.Result.Id.Should().Be(requestedResult.Result.Id);
+			result.Result.Title.Should().Be(requestedResult.Result.Title);
 		}
 	}
 }

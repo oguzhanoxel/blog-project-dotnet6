@@ -1,5 +1,4 @@
 using BlogProject.Tests.TestSetup;
-using BlogProject.Tests.TestSetup.Mocks;
 using BlogProject.Tests.TestSetup.TestDb;
 using Contracts.Dtos.CategoryDtos;
 using FluentAssertions;
@@ -12,12 +11,16 @@ namespace BlogProject.Tests.Services.Queries.CategoryQueries.GetCategoryById
 	public class GetCategoryByIdQueryHandlerTests : IClassFixture<CommonTestFixture>
 	{
 		private readonly CategoryRepository _categoryRepository;
-		private PostCategoryRepository _postCategoryRepository;
+		private readonly PostCategoryRepository _postCategoryRepository;
+		private readonly CategoryBusinessRules _businessRules;
+		private readonly GetCategoryByIdQueryHandler _handler;
 
 		public GetCategoryByIdQueryHandlerTests(CommonTestFixture testFixture)
 		{
 			_categoryRepository = new CategoryRepository(testFixture.Context);
 			_postCategoryRepository = new PostCategoryRepository(testFixture.Context);
+			_businessRules = new CategoryBusinessRules(_categoryRepository, _postCategoryRepository);
+			_handler = new GetCategoryByIdQueryHandler(_categoryRepository, _businessRules);
 		}
 
 		[Fact]
@@ -29,13 +32,8 @@ namespace BlogProject.Tests.Services.Queries.CategoryQueries.GetCategoryById
 				Id = 0
 			};
 
-			var businessRules = new CategoryBusinessRules(_categoryRepository, _postCategoryRepository);
-			var requestedResult = _categoryRepository.GetAsync(category => category.Id == query.Id);
-
-			GetCategoryByIdQueryHandler handler = new GetCategoryByIdQueryHandler(_categoryRepository, businessRules);
-
 			// Act
-			var result = handler.Handle(query, default);
+			var result = _handler.Handle(query, default);
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeFalse();
@@ -51,13 +49,10 @@ namespace BlogProject.Tests.Services.Queries.CategoryQueries.GetCategoryById
 				Id = 2
 			};
 
-			var businessRules = new CategoryBusinessRules(_categoryRepository, _postCategoryRepository);
 			var requestedResult = _categoryRepository.GetAsync(category => category.Id == query.Id);
 
-			GetCategoryByIdQueryHandler handler = new GetCategoryByIdQueryHandler(_categoryRepository, businessRules);
-
 			// Act
-			var result = handler.Handle(query, default);
+			var result = _handler.Handle(query, default);
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeTrue();

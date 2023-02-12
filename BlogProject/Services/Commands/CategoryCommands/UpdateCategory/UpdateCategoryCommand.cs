@@ -1,6 +1,4 @@
 using Contracts.Dtos.CategoryDtos;
-using Core.CrossCuttingConcers.Exceptions;
-using Domain.Entities;
 using Domain.Repositories;
 using Mapster;
 using MediatR;
@@ -12,7 +10,6 @@ namespace Services.Commands.CategoryCommands.UpdateCategory
 	{
 		public int Id { get; set; }
 		public string Title { get; set; }
-		public string Description { get; set; }
 
 		public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, CategoryDto>
 		{

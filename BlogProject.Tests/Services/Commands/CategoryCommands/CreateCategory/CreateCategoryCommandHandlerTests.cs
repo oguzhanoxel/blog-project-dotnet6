@@ -10,10 +10,12 @@ namespace BlogProject.Tests.Services.Commands.CategoryCommands.CreateCategory
 	public class CreateCategoryCommandHandlerTests : IClassFixture<CommonTestFixture>
 	{
 		private readonly CategoryRepository _repository;
+		private readonly CreateCategoryCommandHandler _handler;
 
 		public CreateCategoryCommandHandlerTests(CommonTestFixture testFixture)
 		{
 			_repository = new CategoryRepository(testFixture.Context);
+			_handler = new CreateCategoryCommandHandler(_repository);
 		}
 
 		[Fact]
@@ -25,10 +27,8 @@ namespace BlogProject.Tests.Services.Commands.CategoryCommands.CreateCategory
 				Title = "Created Test Category Title"
 			};
 
-			CreateCategoryCommandHandler handler = new CreateCategoryCommandHandler(_repository);
-
 			// Act
-			var result = handler.Handle(command, default);
+			var result = _handler.Handle(command, CancellationToken.None);
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeTrue();

@@ -7,27 +7,48 @@ namespace BlogProject.Tests.Services.Commands.CategoryCommands.UpdateCategory
 {
 	public class UpdateCategoryCommandValidatorTests
 	{
+		private readonly UpdateCategoryCommandValidator _validator;
+
+		public UpdateCategoryCommandValidatorTests()
+		{
+			_validator = new UpdateCategoryCommandValidator();
+		}
+
 		[Theory]
-		[InlineData("abc", "")]
-		[InlineData("", "")]
-		[InlineData(null, null)]
-		public void WhenInvalidCommandGiven_UpdateCategoryCommandValidator_ShouldReturnErrors(string title, string description)
+		[InlineData("abc")]
+		[InlineData("")]
+		[InlineData(null)]
+		public void WhenInvalidCommandGiven_UpdateCategoryCommandValidator_ShouldReturnErrors(string title)
 		{
 			// Arrange
 			UpdateCategoryCommand command = new UpdateCategoryCommand()
 			{
-				Title = title,
-				Description = description
+				Title = title
 			};
 
-			UpdateCategoryCommandValidator validator = new UpdateCategoryCommandValidator();
-
 			// Act
-			var result = validator.Validate(command);
+			var result = _validator.Validate(command);
 
 			// Assert
 			result.Errors.Count.Should().BeGreaterThan(0);
 			result.IsValid.Should().BeFalse();
+		}
+
+		[Fact]
+		public void WhenValidCommandGiven_UpdateCategoryCommandValidator_ShouldIsValidBeTrue()
+		{
+			// Arrange
+			UpdateCategoryCommand command = new UpdateCategoryCommand()
+			{
+				Title = "Update Test Title Valid"
+			};
+
+			// Act
+			var result = _validator.Validate(command);
+
+			// Assert
+			result.Errors.Count.Should().Be(0);
+			result.IsValid.Should().BeTrue();
 		}
 	}
 }

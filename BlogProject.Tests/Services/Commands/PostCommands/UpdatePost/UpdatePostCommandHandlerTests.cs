@@ -11,10 +11,14 @@ namespace BlogProject.Tests.Services.Commands.PostCommands.UpdatePost
 	public class UpdatePostCommandHandlerTests : IClassFixture<CommonTestFixture>
 	{
 		private readonly PostRepository _repository;
+		private readonly PostBusinessRules _businessRules;
+		private readonly UpdatePostCommandHandler _handler;
 
 		public UpdatePostCommandHandlerTests(CommonTestFixture testFixture)
 		{
 			_repository = new PostRepository(testFixture.Context);
+			_businessRules = new PostBusinessRules(_repository);
+			_handler = new UpdatePostCommandHandler(_repository, _businessRules);
 		}
 
 		[Fact]
@@ -28,12 +32,8 @@ namespace BlogProject.Tests.Services.Commands.PostCommands.UpdatePost
 				Text = "Update Test Text"
 			};
 
-			var businessRules = new PostBusinessRules(_repository);
-
-			UpdatePostCommandHandler handler = new UpdatePostCommandHandler(_repository, businessRules);
-
 			// Act
-			var result = handler.Handle(command, default);
+			var result = _handler.Handle(command, default);
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeFalse();
@@ -51,26 +51,16 @@ namespace BlogProject.Tests.Services.Commands.PostCommands.UpdatePost
 				Text = "Update Test Text"
 			};
 
-			var businessRules = new PostBusinessRules(_repository);
 			var requestedResult = _repository.GetAsync(post => post.Id == command.Id);
 
-			var clonePost = new Post()
-			{
-				Id = requestedResult.Result.Id,
-				Title = requestedResult.Result.Title,
-				Text = requestedResult.Result.Text
-			};
-
-			UpdatePostCommandHandler handler = new UpdatePostCommandHandler(_repository, businessRules);
-
 			// Act
-			var result = handler.Handle(command, default);
+			var result = _handler.Handle(command, default);
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeTrue();
-			result.Result.Id.Should().Be(clonePost.Id);
-			result.Result.Title.Should().NotBe(clonePost.Title);
-			result.Result.Text.Should().NotBe(clonePost.Text);
+			result.Result.Id.Should().Be(requestedResult.Result.Id);
+			result.Result.Title.Should().Be(requestedResult.Result.Title);
+			result.Result.Text.Should().Be(requestedResult.Result.Text);
 		}
 	}
 }
