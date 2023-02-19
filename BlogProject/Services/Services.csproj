@@ -4,7 +4,6 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\..\Core\Core.Persistence\Core.Persistence.csproj" />
     <ProjectReference Include="..\..\Core\Core.CrossCuttingConcers\Core.CrossCuttingConcers.csproj" />
-    <ProjectReference Include="..\Contracts\Contracts.csproj" />
     <ProjectReference Include="..\..\Core\Core.Services\Core.Services.csproj" />
   </ItemGroup>
 

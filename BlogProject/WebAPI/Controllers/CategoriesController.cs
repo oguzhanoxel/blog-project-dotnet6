@@ -1,9 +1,9 @@
-using Contracts.Dtos.CategoryDtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Services.Commands.CategoryCommands.CreateCategory;
 using Services.Commands.CategoryCommands.DeleteCategory;
 using Services.Commands.CategoryCommands.UpdateCategory;
+using Services.Dtos.CategoryDtos;
 using Services.Queries.CategoryQueries.GetCategoryById;
 using Services.Queries.CategoryQueries.GetCategoryList;
 

@@ -1,9 +1,9 @@
-using Contracts.Dtos.PostCategoryDtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Services.Commands.PostCategoryCommands.CreatePostCategory;
 using Services.Commands.PostCategoryCommands.DeletePostCategory;
 using Services.Commands.PostCategoryCommands.UpdatePostCategory;
+using Services.Dtos.PostCategoryDtos;
 using Services.Queries.PostCategoryQueries.GetPostCategoryById;
 using Services.Queries.PostCategoryQueries.GetPostCategoryList;
 

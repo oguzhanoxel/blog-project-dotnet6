@@ -1,8 +1,8 @@
 using BlogProject.Tests.TestSetup;
 using BlogProject.Tests.TestSetup.TestDb;
-using Contracts.Dtos.CategoryDtos;
 using FluentAssertions;
 using Services.Commands.CategoryCommands.CreateCategory;
+using Services.Dtos.CategoryDtos;
 using static Services.Commands.CategoryCommands.CreateCategory.CreateCategoryCommand;
 
 namespace BlogProject.Tests.Services.Commands.CategoryCommands.CreateCategory
@@ -32,7 +32,7 @@ namespace BlogProject.Tests.Services.Commands.CategoryCommands.CreateCategory
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeTrue();
-			result.Result.Should().BeOfType<CategoryDto>();
+			result.Result.Should().BeOfType<CategoryResponseDto>();
 			result.Result.Title.Should().Be(command.Title);
 		}
 	}

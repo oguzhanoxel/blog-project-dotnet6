@@ -1,11 +1,12 @@
-using Contracts.Dtos.PostDtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Services.Commands.PostCommands.CreatePost;
 using Services.Commands.PostCommands.DeletePost;
 using Services.Commands.PostCommands.UpdatePost;
+using Services.Dtos.PostDtos;
 using Services.Queries.PostQueries.GetPostById;
 using Services.Queries.PostQueries.GetPostList;
+using Services.Queries.PostQueries.GetPostListByCategoryId;
 
 namespace WebAPI.Controllers
 {
@@ -25,6 +26,13 @@ namespace WebAPI.Controllers
 		{
 			var postListModel = await _mediator.Send(new GetPostListQuery());
 			return Ok(postListModel);
+		}
+
+		[HttpGet("GetListByCategoryId/{CategoryId}")]
+		public async Task<IActionResult> GetListByCategoryId([FromRoute] GetPostListByCategoryIdQuery query)
+		{
+			var result = await _mediator.Send(query);
+			return Ok(result);
 		}
 
 		[HttpGet("{Id}")]

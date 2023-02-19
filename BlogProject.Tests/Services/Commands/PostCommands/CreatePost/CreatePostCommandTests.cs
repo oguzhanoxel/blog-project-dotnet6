@@ -1,8 +1,8 @@
 using BlogProject.Tests.TestSetup;
 using BlogProject.Tests.TestSetup.TestDb;
-using Contracts.Dtos.PostDtos;
 using FluentAssertions;
 using Services.Commands.PostCommands.CreatePost;
+using Services.Dtos.PostDtos;
 using static Services.Commands.PostCommands.CreatePost.CreatePostCommand;
 
 namespace BlogProject.Tests.Services.Commands.PostCommands.CreatePost;
@@ -32,7 +32,7 @@ public class CreatePostCommandHandlerTests : IClassFixture<CommonTestFixture>
 
         // Assert
         result.IsCompletedSuccessfully.Should().BeTrue();
-        result.Result.Should().BeOfType<PostDto>();
+        result.Result.Should().BeOfType<PostResponseDto>();
         result.Result.Title.Should().Be(command.Title);
         result.Result.Text.Should().Be(command.Text);
     }

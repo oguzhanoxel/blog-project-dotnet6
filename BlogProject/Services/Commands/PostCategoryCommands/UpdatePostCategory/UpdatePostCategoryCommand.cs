@@ -1,19 +1,18 @@
-using Contracts.Dtos.PostCategoryDtos;
-using Core.CrossCuttingConcers.Exceptions;
 using Domain.Repositories;
 using Mapster;
 using MediatR;
+using Services.Dtos.PostCategoryDtos;
 using Services.Rules;
 
 namespace Services.Commands.PostCategoryCommands.UpdatePostCategory
 {
-	public class UpdatePostCategoryCommand : IRequest<PostCategoryDto>
+	public class UpdatePostCategoryCommand : IRequest<PostCategoryResponseDto>
 	{
 		public int Id { get; set; }
 		public int PostId { get; set; }
 		public int CategoryId { get; set; }
 
-		public class UpdatePostCategoryCommandHandler : IRequestHandler<UpdatePostCategoryCommand, PostCategoryDto>
+		public class UpdatePostCategoryCommandHandler : IRequestHandler<UpdatePostCategoryCommand, PostCategoryResponseDto>
 		{
 			private readonly IPostCategoryRepository _postCategoryRepository;
 			private readonly PostCategoryBusinessRules _postCategoryBusinessRules;
@@ -23,7 +22,7 @@ namespace Services.Commands.PostCategoryCommands.UpdatePostCategory
 				_postCategoryRepository = postCategoryRepository;
 				_postCategoryBusinessRules = postCategoryBusinessRules;
 			}
-			public async Task<PostCategoryDto> Handle(UpdatePostCategoryCommand request, CancellationToken cancellationToken)
+			public async Task<PostCategoryResponseDto> Handle(UpdatePostCategoryCommand request, CancellationToken cancellationToken)
 			{
 				await _postCategoryBusinessRules.PostCategoryShouldExistWhenRequested(request.Id);
 
@@ -33,7 +32,7 @@ namespace Services.Commands.PostCategoryCommands.UpdatePostCategory
 				postCategory.CategoryId = request.CategoryId;
 
 				var updatedPostCategory = await _postCategoryRepository.UpdateAsync(postCategory);
-				var mappedPostCategory = updatedPostCategory.Adapt<PostCategoryDto>();
+				var mappedPostCategory = updatedPostCategory.Adapt<PostCategoryResponseDto>();
 				return mappedPostCategory;
 			}
 		}

@@ -3,7 +3,6 @@ using Core.Services.Pipelines.Validation;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Services.Commands.PostCommands.CreatePost;
 using Services.Rules;
 
 namespace Services

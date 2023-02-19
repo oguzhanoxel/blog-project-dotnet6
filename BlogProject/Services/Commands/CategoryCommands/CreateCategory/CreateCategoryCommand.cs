@@ -1,16 +1,16 @@
-using Contracts.Dtos.CategoryDtos;
 using Domain.Entities;
 using Domain.Repositories;
 using Mapster;
 using MediatR;
+using Services.Dtos.CategoryDtos;
 
 namespace Services.Commands.CategoryCommands.CreateCategory
 {
-	public class CreateCategoryCommand : IRequest<CategoryDto>
+	public class CreateCategoryCommand : IRequest<CategoryResponseDto>
 	{
 		public string Title { get; set; }
 
-		public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, CategoryDto>
+		public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, CategoryResponseDto>
 		{
 			private readonly ICategoryRepository _categoryRepository;
 
@@ -19,11 +19,11 @@ namespace Services.Commands.CategoryCommands.CreateCategory
 				_categoryRepository = categoryRepository;
 			}
 
-			public async Task<CategoryDto> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+			public async Task<CategoryResponseDto> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
 			{
 				var category = request.Adapt<Category>();
 				var createdCategory = await _categoryRepository.CreateAsync(category);
-				var mappedCategory = createdCategory.Adapt<CategoryDto>();
+				var mappedCategory = createdCategory.Adapt<CategoryResponseDto>();
 				return mappedCategory;
 			}
 		}

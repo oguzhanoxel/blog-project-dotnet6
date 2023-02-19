@@ -1,7 +1,7 @@
 using BlogProject.Tests.TestSetup;
 using BlogProject.Tests.TestSetup.TestDb;
-using Contracts.Dtos.PostDtos;
 using FluentAssertions;
+using Services.Dtos.PostDtos;
 using Services.Queries.PostQueries.GetPostById;
 using Services.Rules;
 using static Services.Queries.PostQueries.GetPostById.GetPostByIdQuery;
@@ -54,7 +54,7 @@ namespace BlogProject.Tests.Services.Queries.PostQueries.GetPostById
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeTrue();
-			result.Result.Should().BeOfType<PostDto>();
+			result.Result.Should().BeOfType<PostResponseDto>();
 			result.Result.Title.Should().Be(requestedResult.Result.Title);
 			result.Result.Text.Should().Be(requestedResult.Result.Text);
 		}

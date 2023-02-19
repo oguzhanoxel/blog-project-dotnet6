@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace Core.Persistence.Repositories
 {
@@ -34,15 +35,24 @@ namespace Core.Persistence.Repositories
 			await _context.SaveChangesAsync();
 		}
 
-		public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
-		{
-			return await _context.Set<TEntity>().FirstOrDefaultAsync(predicate);
-		}
-
-		public async Task<IEnumerable<TEntity>> GetListAsync(Expression<Func<TEntity, bool>>? predicate = null, CancellationToken cancellationToken = default)
+		public async Task<TEntity?> GetAsync(
+			Expression<Func<TEntity, bool>> predicate,
+			Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+			CancellationToken cancellationToken = default)
 		{
 			IQueryable<TEntity> queryable = _context.Set<TEntity>();
-			if(predicate is not null) queryable.Where(predicate);
+			if (include is not null) queryable = include(queryable);
+			return await queryable.FirstOrDefaultAsync(predicate);
+		}
+
+		public async Task<IEnumerable<TEntity>> GetListAsync(
+			Expression<Func<TEntity, bool>>? predicate = null,
+			Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+			CancellationToken cancellationToken = default)
+		{
+			IQueryable<TEntity> queryable = _context.Set<TEntity>();
+			if (include is not null) queryable = include(queryable);
+			if(predicate is not null) queryable = queryable.Where(predicate);
 			return await queryable.ToListAsync();
 		}
 	}

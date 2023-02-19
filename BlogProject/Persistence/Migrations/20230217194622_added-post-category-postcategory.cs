@@ -5,7 +5,7 @@
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class addedpostcategory : Migration
+    public partial class addedpostcategorypostcategory : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -41,13 +41,14 @@ namespace Persistence.Migrations
                 name: "PostCategories",
                 columns: table => new
                 {
-                    PostId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PostId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostCategories", x => new { x.PostId, x.CategoryId });
+                    table.PrimaryKey("PK_PostCategories", x => x.Id);
                     table.ForeignKey(
                         name: "FK_PostCategories_Categories_CategoryId",
                         column: x => x.CategoryId,
@@ -65,6 +66,11 @@ namespace Persistence.Migrations
                 name: "IX_PostCategories_CategoryId",
                 table: "PostCategories",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostCategories_PostId",
+                table: "PostCategories",
+                column: "PostId");
         }
 
         /// <inheritdoc />

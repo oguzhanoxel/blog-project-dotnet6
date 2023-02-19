@@ -1,7 +1,7 @@
 using BlogProject.Tests.TestSetup;
 using BlogProject.Tests.TestSetup.TestDb;
-using Contracts.Dtos.CategoryDtos;
 using FluentAssertions;
+using Services.Dtos.CategoryDtos;
 using Services.Queries.CategoryQueries.GetCategoryById;
 using Services.Rules;
 using static Services.Queries.CategoryQueries.GetCategoryById.GetCategoryByIdQuery;
@@ -56,7 +56,7 @@ namespace BlogProject.Tests.Services.Queries.CategoryQueries.GetCategoryById
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeTrue();
-			result.Result.Should().BeOfType<CategoryDto>();
+			result.Result.Should().BeOfType<CategoryResponseDto>();
 			result.Result.Title.Should().Be(requestedResult.Result.Title);
 		}
 	}

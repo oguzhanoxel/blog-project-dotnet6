@@ -1,6 +1,6 @@
-namespace Contracts.Dtos.PostCategoryDtos
+namespace Services.Dtos.PostCategoryDtos
 {
-	public class PostCategoryDto
+	public class PostCategoryResponseDto
 	{
 		public int Id { get; set; }
 		

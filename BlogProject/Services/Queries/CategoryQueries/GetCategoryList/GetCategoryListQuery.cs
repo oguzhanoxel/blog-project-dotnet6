@@ -1,14 +1,14 @@
-using Contracts.Dtos.CategoryDtos;
 using Domain.Repositories;
 using Mapster;
 using MediatR;
+using Services.Dtos.CategoryDtos;
 
 namespace Services.Queries.CategoryQueries.GetCategoryList
 {
-	public class GetCategoryListQuery : IRequest<IList<CategoryDto>>
+	public class GetCategoryListQuery : IRequest<IList<CategoryResponseDto>>
 	{
 
-		public class GetCategoryListQueryHandler : IRequestHandler<GetCategoryListQuery, IList<CategoryDto>>
+		public class GetCategoryListQueryHandler : IRequestHandler<GetCategoryListQuery, IList<CategoryResponseDto>>
 		{
 			private readonly ICategoryRepository _categoryRepository;
 
@@ -17,10 +17,10 @@ namespace Services.Queries.CategoryQueries.GetCategoryList
 				_categoryRepository = categoryRepository;
 			}
 
-			public async Task<IList<CategoryDto>> Handle(GetCategoryListQuery request, CancellationToken cancellationToken)
+			public async Task<IList<CategoryResponseDto>> Handle(GetCategoryListQuery request, CancellationToken cancellationToken)
 			{
 				var categories = await _categoryRepository.GetListAsync();
-				var mappedCategories = categories.Adapt<IList<CategoryDto>>();
+				var mappedCategories = categories.Adapt<IList<CategoryResponseDto>>();
 				return mappedCategories;
 			}
 		}

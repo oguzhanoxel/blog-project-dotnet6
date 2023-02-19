@@ -11,8 +11,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(RepositoryDbContext))]
-    [Migration("20230207064509_added-post-category")]
-    partial class addedpostcategory
+    [Migration("20230217194622_added-post-category-postcategory")]
+    partial class addedpostcategorypostcategory
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,18 +61,23 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.PostCategory", b =>
                 {
-                    b.Property<int>("PostId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("PostId")
                         .HasColumnType("int");
 
-                    b.HasKey("PostId", "CategoryId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("PostId");
 
                     b.ToTable("PostCategories");
                 });

@@ -17,7 +17,7 @@ namespace Persistence
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<PostCategory>()
-				.HasKey(pc => new { pc.PostId, pc.CategoryId });
+				.HasKey(pc => pc.Id);
 
 			modelBuilder.Entity<PostCategory>()
 				.HasOne(pc => pc.Post)

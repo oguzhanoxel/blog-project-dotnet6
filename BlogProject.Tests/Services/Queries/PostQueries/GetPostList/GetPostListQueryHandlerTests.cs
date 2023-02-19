@@ -1,7 +1,7 @@
 using BlogProject.Tests.TestSetup;
 using BlogProject.Tests.TestSetup.TestDb;
-using Contracts.Dtos.PostDtos;
 using FluentAssertions;
+using Services.Dtos.PostDtos;
 using Services.Queries.PostQueries.GetPostList;
 using static Services.Queries.PostQueries.GetPostList.GetPostListQuery;
 
@@ -29,7 +29,7 @@ namespace BlogProject.Tests.Services.Queries.PostQueries.GetPostList
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeTrue();
-			result.Result.Should().BeOfType<List<PostDto>>();
+			result.Result.Should().BeOfType<List<PostResponseDto>>();
 		}
 	}
 }

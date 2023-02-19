@@ -1,4 +1,4 @@
-namespace Contracts.Dtos.PostCategoryDtos
+namespace Services.Dtos.PostCategoryDtos
 {
 	public class PostCategoryUpdateDto
 	{

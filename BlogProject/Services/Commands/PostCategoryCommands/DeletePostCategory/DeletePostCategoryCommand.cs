@@ -1,17 +1,16 @@
-using Contracts.Dtos.PostCategoryDtos;
-using Core.CrossCuttingConcers.Exceptions;
 using Domain.Repositories;
 using Mapster;
 using MediatR;
+using Services.Dtos.PostCategoryDtos;
 using Services.Rules;
 
 namespace Services.Commands.PostCategoryCommands.DeletePostCategory
 {
-	public class DeletePostCategoryCommand : IRequest<PostCategoryDto>
+	public class DeletePostCategoryCommand : IRequest<PostCategoryResponseDto>
 	{
 		public int Id { get; set; }
 
-		public class DeletePostCategoryCommandHandler : IRequestHandler<DeletePostCategoryCommand, PostCategoryDto>
+		public class DeletePostCategoryCommandHandler : IRequestHandler<DeletePostCategoryCommand, PostCategoryResponseDto>
 		{
 			private readonly IPostCategoryRepository _postCategoryRepository;
 			private readonly PostCategoryBusinessRules _postCategoryBusinessRules;
@@ -22,14 +21,14 @@ namespace Services.Commands.PostCategoryCommands.DeletePostCategory
 				_postCategoryBusinessRules = postCategoryBusinessRules;
 			}
 
-			public async Task<PostCategoryDto> Handle(DeletePostCategoryCommand request, CancellationToken cancellationToken)
+			public async Task<PostCategoryResponseDto> Handle(DeletePostCategoryCommand request, CancellationToken cancellationToken)
 			{
 				await _postCategoryBusinessRules.PostCategoryShouldExistWhenRequested(request.Id);
 
 				var postCategory = await _postCategoryRepository.GetAsync(postCategory => postCategory.Id == request.Id);
 
 				await _postCategoryRepository.DeleteAsync(postCategory);
-				var mappedPostCategory = postCategory.Adapt<PostCategoryDto>();
+				var mappedPostCategory = postCategory.Adapt<PostCategoryResponseDto>();
 				return mappedPostCategory;
 			}
 		}

@@ -1,19 +1,18 @@
-using Contracts.Dtos.PostDtos;
-using Core.CrossCuttingConcers.Exceptions;
 using Domain.Repositories;
 using Mapster;
 using MediatR;
+using Services.Dtos.PostDtos;
 using Services.Rules;
 
 namespace Services.Commands.PostCommands.UpdatePost
 {
-	public class UpdatePostCommand : IRequest<PostDto>
+	public class UpdatePostCommand : IRequest<PostResponseDto>
 	{
 		public int Id { get; set; }
 		public string Title { get; set; }
 		public string Text { get; set; }
 
-		public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostDto>
+		public class UpdatePostCommandHandler : IRequestHandler<UpdatePostCommand, PostResponseDto>
 		{
 			private readonly IPostRepository _postRepository;
 			private readonly PostBusinessRules _postBusinessRules;
@@ -25,7 +24,7 @@ namespace Services.Commands.PostCommands.UpdatePost
 			}
 
 
-			public async Task<PostDto> Handle(UpdatePostCommand request, CancellationToken cancellationToken)
+			public async Task<PostResponseDto> Handle(UpdatePostCommand request, CancellationToken cancellationToken)
 			{
 				await _postBusinessRules.PostShouldExistWhenRequested(request.Id);
 
@@ -35,7 +34,7 @@ namespace Services.Commands.PostCommands.UpdatePost
 				post.Text = request.Text;
 
 				var updatedPost = await _postRepository.UpdateAsync(post);
-				var mappedPost = updatedPost.Adapt<PostDto>();
+				var mappedPost = updatedPost.Adapt<PostResponseDto>();
 				return mappedPost;
 			}
 		}

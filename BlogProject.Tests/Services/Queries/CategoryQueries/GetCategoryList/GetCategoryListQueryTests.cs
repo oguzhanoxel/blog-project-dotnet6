@@ -1,7 +1,7 @@
 using BlogProject.Tests.TestSetup;
 using BlogProject.Tests.TestSetup.TestDb;
-using Contracts.Dtos.CategoryDtos;
 using FluentAssertions;
+using Services.Dtos.CategoryDtos;
 using Services.Queries.CategoryQueries.GetCategoryList;
 using static Services.Queries.CategoryQueries.GetCategoryList.GetCategoryListQuery;
 
@@ -29,7 +29,7 @@ namespace BlogProject.Tests.Services.Queries.CategoryQueries.GetCategoryList
 
 			// Assert
 			result.IsCompletedSuccessfully.Should().BeTrue();
-			result.Result.Should().BeOfType<List<CategoryDto>>();
+			result.Result.Should().BeOfType<List<CategoryResponseDto>>();
 		}
 	}
 }
