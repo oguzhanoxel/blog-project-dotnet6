@@ -52,7 +52,7 @@ namespace Core.Persistence.Repositories
 		{
 			IQueryable<TEntity> queryable = _context.Set<TEntity>();
 			if (include is not null) queryable = include(queryable);
-			if(predicate is not null) queryable = queryable.Where(predicate);
+			if (predicate is not null) queryable = queryable.Where(predicate);
 			return await queryable.ToListAsync();
 		}
 	}

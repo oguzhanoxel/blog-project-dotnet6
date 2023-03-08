@@ -5,6 +5,7 @@
     <ProjectReference Include="..\..\Core\Core.Persistence\Core.Persistence.csproj" />
     <ProjectReference Include="..\..\Core\Core.CrossCuttingConcers\Core.CrossCuttingConcers.csproj" />
     <ProjectReference Include="..\..\Core\Core.Services\Core.Services.csproj" />
+    <ProjectReference Include="..\..\Core\Core.Security\Core.Security.csproj" />
   </ItemGroup>
 
   <ItemGroup>

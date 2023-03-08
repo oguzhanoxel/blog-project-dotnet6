@@ -8,7 +8,7 @@ namespace Persistence.Repositories
 	{
 		public PostRepository(RepositoryDbContext context) : base(context)
 		{
-			
+
 		}
 	}
 }

@@ -4,7 +4,7 @@ using Services.Constants;
 
 namespace Services.Rules
 {
-	public class PostBusinessRules
+	public partial class PostBusinessRules
 	{
 		private readonly IPostRepository _postRepository;
 

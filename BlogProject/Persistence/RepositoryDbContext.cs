@@ -1,3 +1,4 @@
+using Core.Security.Entities;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,12 +8,17 @@ namespace Persistence
 	{
 		public RepositoryDbContext(DbContextOptions options) : base(options)
 		{
-			
+
 		}
 
 		public DbSet<Post>? Posts { get; set; }
 		public DbSet<Category>? Categories { get; set; }
 		public DbSet<PostCategory>? PostCategories { get; set; }
+
+		public DbSet<User>? Users { get; set; }
+		public DbSet<OperationClaim>? OperationClaims { get; set; }
+		public DbSet<UserOperationClaim>? UserOperationClaims { get; set; }
+		public DbSet<RefreshToken>? RefreshTokens { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
